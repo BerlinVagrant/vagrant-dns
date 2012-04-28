@@ -67,9 +67,11 @@ $ vagrant dns --stop
 
 # Issues
 
+* No autostart
 * Currently, you need one TLD per environment
 * Only A and AAAA records at the moment
 * Only one record per machine ("hostname.tld")
 * Advanced customization of record rules is not supported at the moment
 * OS X only
 * Alpha code
+* `curl` takes unacceptably long to resolve
