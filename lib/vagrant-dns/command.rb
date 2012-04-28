@@ -49,29 +49,30 @@ module VagrantDNS
       elsif options[:stop]
         run_options = {:ARGV => ["stop"]}
       end
-      
+
       if options[:start] || options[:stop]        
         Daemons.run_proc("dnsserver.rb", run_options) do
           require 'rubydns'
 
           RubyDNS::run_server(:listen => VagrantDNS::Config.listen) do
             self.logger = VagrantDNS::Config.logger if VagrantDNS::Config.logger
-            
+
             dns_options.each do |opts|
-              pattern = /^.*#{opts[:host_name]}.#{opts[:tld]}$/
+              patterns = opts[:patterns] || [/^.*#{opts[:host_name]}.#{opts[:tld]}$/] 
 
-              network = opts[:networks].first
-              ip = network.last.first
+              patterns.each do |pattern|
+                network = opts[:networks].first
+                ip      = network.last.first
 
-              action = lambda { |match_data, transaction| transaction.respond!(ip) }
+                action  = lambda { |match_data, transaction| transaction.respond!(ip) }
 
-              match(pattern, :A, &action)
-              match(pattern, :AAAA, &action) unless opts[:ipv4only] || VagrantDNS::Config.ipv4only
+                match(pattern, :A, &action)
+              end
             end
           end
         end
       end
-      
+
       if options[:install]
         require 'fileutils'
         dns_options.each do |opts|
@@ -87,10 +88,10 @@ FILE
           end
         end
       end
-      
+
       if options[:uninstall]
         require 'fileutils'
-        
+
         dns_options.each do |opts|
           tld = opts[:tld]
           FileUtils.rm(File.join("/etc/resolver", tld))
@@ -99,7 +100,7 @@ FILE
     end
 
     protected
-    
+
     def get_dns_options(vm)
       dns_options = vm.config.dns.to_hash
       dns_options[:host_name] = vm.config.vm.host_name

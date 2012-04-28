@@ -67,19 +67,19 @@ $ vagrant dns --stop
 ## VM options
 
 * `vm.dns.tld`: Set the tld for the given virtual machine. No default.
-* `vm.dns.ipv4only`: Turn ipv6 off for this machine only. Off by default (but globally disabled by default)
+* `vm.dns.patterns`: A list of domain patterns to match. Defaults to `[/^.*{host_name}.{tld}$/]`
 
 ## Global Options
 
 * `VagrantDNS::Config.logger`: a logger object to be used by the DNS server. Defaults to `$stderr`
-* `VagrantDNS::Config.listen`: an Array of Array describing interfaces to bind to. Defaults to `[[:udp, "127.0.0.1", 5300]]`.
-* `VagrantDNS::Config.ipv4only`: when true, AAAA records will be published. Defaults to `true`. Turn off if your stack is actually built for ipv6 support.
+* `VagrantDNS::Config.listen`: an Array of Arrays describing interfaces to bind to. Defaults to `[[:udp, "127.0.0.1", 5300]]`.
 
 ## Issues
 
 * No autostart
 * Multiple TLDs per environment are supported, but no 2 environments can share a TLD
-* Only A and AAAA records at the moment
+* A records only
+* no ipv6 support
 * Only one record per machine ("hostname.tld")
 * Advanced customization of record rules is not supported at the moment
 * OS X only
