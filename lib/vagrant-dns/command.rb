@@ -66,7 +66,7 @@ module VagrantDNS
               action = lambda { |match_data, transaction| transaction.respond!(ip) }
 
               match(pattern, :A, &action)
-              match(pattern, :AAAA, &action)
+              match(pattern, :AAAA, &action) unless opts[:ipv4only] || VagrantDNS::Config.ipv4only
             end
           end
         end
