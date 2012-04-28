@@ -9,9 +9,10 @@ Vagrant::Config.run do |config|
 
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "base"
-  
+
+  config.dns.tld = "dns"
   config.dns.patterns = /^.*machine.dev$/
-  
+
   config.vm.host_name = "machine"
   config.vm.network :hostonly, "33.33.33.60"
 

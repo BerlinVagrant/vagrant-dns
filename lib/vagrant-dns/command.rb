@@ -1,5 +1,6 @@
 require 'optparse'
 require 'daemons'
+require 'rbconfig'
 
 module VagrantDNS
 
@@ -10,7 +11,7 @@ module VagrantDNS
     def execute
       options = {}
       opts = OptionParser.new do |opts|
-        opts.banner = "Usage: vagrant dns [vm-name] [-i|--install] [-u|--uninstall] [-s|--start] [-S|--stop]"
+        opts.banner = "Usage: vagrant dns [vm-name] [-i|--install] [-u|--uninstall] [-s|--start] [-S|--stop] [-r|--restart]"
         opts.separator ""
 
         opts.on("--install", "-i", "Install DNS config for machine domain") do
@@ -28,7 +29,10 @@ module VagrantDNS
         opts.on("--stop", "-s", "Stop the DNS service") do
           options[:stop] = true
         end
-
+        
+        opts.on("--restart", "-r", "Restart the DNS service") do
+          options[:restart] = true
+        end
       end
 
       argv = parse_options(opts)
@@ -43,58 +47,28 @@ module VagrantDNS
           with_target_vms(vm_name) { |vm| dns_options << get_dns_options(vm) }
         end
       end
+
+      service = VagrantDNS::Service.new(dns_options)
       
       if options[:start]
-        run_options = {:ARGV => ["start"]}
+        service.start!
       elsif options[:stop]
-        run_options = {:ARGV => ["stop"]}
+        service.stop!
+      elsif options[:restart]
+        service.restart!
       end
 
-      if options[:start] || options[:stop]        
-        Daemons.run_proc("dnsserver.rb", run_options) do
-          require 'rubydns'
-
-          RubyDNS::run_server(:listen => VagrantDNS::Config.listen) do
-            self.logger = VagrantDNS::Config.logger if VagrantDNS::Config.logger
-
-            dns_options.each do |opts|
-              patterns = opts[:patterns] || [/^.*#{opts[:host_name]}.#{opts[:tld]}$/] 
-
-              patterns.each do |pattern|
-                network = opts[:networks].first
-                ip      = network.last.first
-
-                action  = lambda { |match_data, transaction| transaction.respond!(ip) }
-
-                match(pattern, :A, &action)
-              end
-            end
+      if options[:install] || options[:uninstall]
+        if RbConfig::CONFIG["host_os"].match /darwin/
+          installer = VagrantDNS::Installers::Mac.new(dns_options)
+          
+          if options[:install]
+            installer.install!
+          elsif options[:uninstall]
+            installer.uninstall!
           end
-        end
-      end
-
-      if options[:install]
-        require 'fileutils'
-        dns_options.each do |opts|
-          port = VagrantDNS::Config.listen.first.last
-          tld = opts[:tld]
-          contents = <<-FILE
-nameserver 127.0.0.1
-port #{port}
-FILE
-          FileUtils.mkdir_p("/etc/resolver")
-          File.open(File.join("/etc/resolver", tld), "w") do |f|
-            f << contents
-          end
-        end
-      end
-
-      if options[:uninstall]
-        require 'fileutils'
-
-        dns_options.each do |opts|
-          tld = opts[:tld]
-          FileUtils.rm(File.join("/etc/resolver", tld))
+        else
+          raise 'installing and uninstalling is only supported on Mac OS X at the moment.'
         end
       end
     end
