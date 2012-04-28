@@ -17,7 +17,7 @@ module VagrantDNS
     end
 
     def run!(run_options)
-      Daemons.run_proc("dnsserver.rb", run_options) do
+      Daemons.run_proc("vagrant-dns", run_options) do
         require 'rubydns'
 
         dns_options = self.dns_options # meh, instance_eval
