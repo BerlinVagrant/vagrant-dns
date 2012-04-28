@@ -68,7 +68,7 @@ $ vagrant dns --stop
 # Issues
 
 * No autostart
-* Currently, you need one TLD per environment
+* Multiple TLDs per environment are supported, but no 2 environments can share a TLD
 * Only A and AAAA records at the moment
 * Only one record per machine ("hostname.tld")
 * Advanced customization of record rules is not supported at the moment
