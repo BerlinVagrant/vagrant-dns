@@ -74,4 +74,4 @@ $ vagrant dns --stop
 * Advanced customization of record rules is not supported at the moment
 * OS X only
 * Alpha code
-* `curl` takes unacceptably long to resolve
+* `curl` takes unacceptably long to resolve without `-4` flag (only if your box has no ipv6 services)
