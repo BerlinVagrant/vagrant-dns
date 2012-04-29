@@ -1,18 +1,19 @@
 module VagrantDNS
   class Service
-    attr_accessor :dns_options
+    attr_accessor :tmp_path, :options
     
-    def initialize(opts)
-      self.dns_options = opts
+    def initialize(tmp_path, options = {})
+      self.tmp_path = tmp_path
+      self.options = options
     end
 
     def start!
-      run_options = {:ARGV => ["start"]}
+      run_options = {:ARGV => ["start"]}.merge(options).merge(runopts)
       run!(run_options)
     end
 
     def stop!
-      run_options = {:ARGV => ["stop"]}
+      run_options = {:ARGV => ["stop"]}.merge(options).merge(runopts)
       run!(run_options)
     end
 
@@ -20,21 +21,12 @@ module VagrantDNS
       Daemons.run_proc("vagrant-dns", run_options) do
         require 'rubydns'
 
-        dns_options = self.dns_options # meh, instance_eval
+        registry = YAML.load(File.read(config_file))
 
         RubyDNS::run_server(:listen => VagrantDNS::Config.listen) do
-          self.logger = VagrantDNS::Config.logger if VagrantDNS::Config.logger
-
-          dns_options.each do |opts|
-            patterns = opts[:patterns] || [/^.*#{opts[:host_name]}.#{opts[:tld]}$/] 
-
-            patterns.each do |pattern|
-              network = opts[:networks].first
-              ip      = network.last.first
-
-              action  = lambda { |match_data, transaction| transaction.respond!(ip) }
-
-              match(pattern, :A, &action)
+          registry.each do |pattern, ip|
+            match(Regexp.new(pattern), :A) do |match_data, transaction|
+              transaction.respond!(ip)
             end
           end
         end
@@ -42,8 +34,19 @@ module VagrantDNS
     end
 
     def restart!
-      stop
-      start
+      stop!
+      start!
+    end
+    
+    def runopts
+      {:dir_mode => :normal, 
+       :dir => File.join(tmp_path, "daemon"),
+       :log_output => true,
+       :log_dir => File.join(tmp_path, "daemon")}
+    end
+    
+    def config_file
+      File.join(tmp_path, "config")
     end
   end
 end

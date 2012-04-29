@@ -36,7 +36,7 @@ Then, register the DNS server as a resolver:
 $ sudo vagrant dns --install
 ```
 
-On OS X, this will create a file `/etc/resolver/dev`, which tells OS X to resolve the TLD `.dev` by using the nameserver given in this file.
+On OS X, this will create a file `/etc/resolver/dev`, which tells OS X to resolve the TLD `.dev` by using the nameserver given in this file. You will have to rerun --install every time a tld is added.
 
 You can delete this file by running:
 
@@ -64,23 +64,22 @@ Finally, stop the server using:
 $ vagrant dns --stop
 ```
 
+The DNS server will start automatically once the first VM is started.
+
 ## VM options
 
 * `vm.dns.tld`: Set the tld for the given virtual machine. No default.
+* `vm.dns.tlds`: Set multiple tlds. Default: `[tld]`
 * `vm.dns.patterns`: A list of domain patterns to match. Defaults to `[/^.*{host_name}.{tld}$/]`
 
 ## Global Options
 
-* `VagrantDNS::Config.logger`: a logger object to be used by the DNS server. Defaults to `$stderr`
 * `VagrantDNS::Config.listen`: an Array of Arrays describing interfaces to bind to. Defaults to `[[:udp, "127.0.0.1", 5300]]`.
+* `VagrantDNS::Config.auto_run`: (re)start and reconfigure the server every time a machine is started. On by default.
 
 ## Issues
 
-* No autostart
-* Multiple TLDs per environment are supported, but no 2 environments can share a TLD
 * A records only
 * no ipv6 support
-* Only one record per machine ("hostname.tld")
-* Advanced customization of record rules is not supported at the moment
 * OS X only
 * Alpha code

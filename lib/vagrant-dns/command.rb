@@ -11,7 +11,7 @@ module VagrantDNS
     def execute
       options = {}
       opts = OptionParser.new do |opts|
-        opts.banner = "Usage: vagrant dns [vm-name] [-i|--install] [-u|--uninstall] [-s|--start] [-S|--stop] [-r|--restart]"
+        opts.banner = "Usage: vagrant dns [vm-name] [-i|--install] [-u|--uninstall] [-s|--start] [-S|--stop] [-r|--restart] [-o|--ontop]"
         opts.separator ""
 
         opts.on("--install", "-i", "Install DNS config for machine domain") do
@@ -33,6 +33,10 @@ module VagrantDNS
         opts.on("--restart", "-r", "Restart the DNS service") do
           options[:restart] = true
         end
+        
+        opts.on("--ontop", "-o", "Start the DNS service on top. Debugging only, this blocks Vagrant!") do
+          options[:ontop] = true
+        end
       end
 
       argv = parse_options(opts)
@@ -40,15 +44,12 @@ module VagrantDNS
 
       dns_options = []
       
-      if argv.empty?
-        with_target_vms(nil) { |vm| dns_options << get_dns_options(vm) }
-      else
-        argv.each do |vm_name|
-          with_target_vms(vm_name) { |vm| dns_options << get_dns_options(vm) }
-        end
-      end
+      vms = argv unless argv.empty?
+      tmp_path = File.join(@env.tmp_path, "dns")
+      
+      with_target_vms(vms) { |vm| VagrantDNS::Configurator.new(vm, tmp_path).run! }
 
-      service = VagrantDNS::Service.new(dns_options)
+      service = VagrantDNS::Service.new(tmp_path, options)
       
       if options[:start]
         service.start!
@@ -60,7 +61,7 @@ module VagrantDNS
 
       if options[:install] || options[:uninstall]
         if RbConfig::CONFIG["host_os"].match /darwin/
-          installer = VagrantDNS::Installers::Mac.new(dns_options)
+          installer = VagrantDNS::Installers::Mac.new(tmp_path)
           
           if options[:install]
             installer.install!
@@ -71,15 +72,6 @@ module VagrantDNS
           raise 'installing and uninstalling is only supported on Mac OS X at the moment.'
         end
       end
-    end
-
-    protected
-
-    def get_dns_options(vm)
-      dns_options = vm.config.dns.to_hash
-      dns_options[:host_name] = vm.config.vm.host_name
-      dns_options[:networks] = vm.config.vm.networks
-      dns_options
     end
   end
 end
