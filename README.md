@@ -14,7 +14,7 @@ otherwise, use:
 
 ## Usage
 
-In addition to your networking config, configure a toplevel domain and a `host_name` for your machine. Global configuration options can be given through the `VagrantDNS::Config` object:
+In addition to your networking config, configure a toplevel domain and a `host_name` for your machine. Optionally, configure a set of free matching patterns. Global configuration options can be given through the `VagrantDNS::Config` object:
 
 ```ruby
 Vagrant::Config.run do |config|
@@ -23,6 +23,9 @@ Vagrant::Config.run do |config|
   config.dns.tld = "dev"
   
   config.vm.host_name = "machine"
+  
+  config.dns.patterns = [/^.*mysite.dev$/, /^.*myothersite.dev$/]
+  
   config.vm.network :hostonly, "33.33.33.60"
 end
 
