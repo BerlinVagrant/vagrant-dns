@@ -9,6 +9,7 @@ module VagrantDNS
 
       def install!
         require 'fileutils'
+        FileUtils.mkdir_p('/etc/resolver')
 
         registered_resolvers.each do |r|
           FileUtils.ln_s(registered_resolvers, "/etc/resolver", :force => true)
