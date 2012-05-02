@@ -19,6 +19,8 @@ module VagrantDNS
     private
       def regenerate_resolvers!
         FileUtils.mkdir_p(resolver_folder)
+        FileUtils.mkdir_p('/etc/resolver')
+
         port = VagrantDNS::Config.listen.first.last
         tlds = dns_options(vm)[:tlds]
 
