@@ -36,8 +36,13 @@ module VagrantDNS
         opts     = dns_options(vm)
         patterns = opts[:patterns] || opts[:tlds].map { |tld| /^.*#{opts[:host_name]}.#{tld}$/ } 
         network  = opts[:networks].first
-        ip       = network.last.first
-        
+
+        if network
+          ip     = network.last.first
+        else
+          ip     = '127.0.0.1'
+        end
+
         patterns.each do |p|
           p = p.source if p.respond_to? :source # Regexp#to_s is unusable
           registry[p] = ip 

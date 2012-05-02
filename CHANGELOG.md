@@ -1,3 +1,11 @@
+# v0.2.2
+
+* Default to 127.0.0.1 when no network option is given
+
+# v0.2.1
+
+* Fix a crash when /etc/resolver is not present
+
 # v0.2.0
 
 * Deactivate ipv6 support (was broken anyways)
