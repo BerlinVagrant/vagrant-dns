@@ -34,7 +34,7 @@ module VagrantDNS
         registry = YAML.load(File.read(config_file)) if File.exists?(config_file)
         registry ||= {}
         opts     = dns_options(vm)
-        patterns = opts[:patterns] || opts[:tlds].map { |tld| /^.*#{opts[:host_name]}.#{tld}$/ } 
+        patterns = opts[:patterns] || default_patterns(opts)
         network  = opts[:networks].first
 
         if network
@@ -56,6 +56,14 @@ module VagrantDNS
         dns_options[:host_name] = vm.config.vm.host_name
         dns_options[:networks] = vm.config.vm.networks
         dns_options
+      end
+
+      def default_patterns
+        if opts[:host_name]
+          opts[:tlds].map { |tld| /^.*#{opts[:host_name]}.#{tld}$/ }
+        else
+          warn 'TLD but no host_name given. No patterns will be configured.'
+        end
       end
 
       def resolver_file(port)
