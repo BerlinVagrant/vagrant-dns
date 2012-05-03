@@ -1,6 +1,7 @@
 # v0.2.2
 
 * Default to 127.0.0.1 when no network option is given
+* Warn if no default pattern is configured because TLD is given, but no host_name
 
 # v0.2.1
 

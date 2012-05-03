@@ -58,11 +58,12 @@ module VagrantDNS
         dns_options
       end
 
-      def default_patterns
+      def default_patterns(opts)
         if opts[:host_name]
           opts[:tlds].map { |tld| /^.*#{opts[:host_name]}.#{tld}$/ }
         else
           warn 'TLD but no host_name given. No patterns will be configured.'
+          []
         end
       end
 
