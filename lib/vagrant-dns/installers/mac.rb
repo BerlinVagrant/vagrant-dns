@@ -12,7 +12,7 @@ module VagrantDNS
         FileUtils.mkdir_p('/etc/resolver')
 
         registered_resolvers.each do |r|
-          FileUtils.ln_s(registered_resolvers, "/etc/resolver", :force => true)
+          FileUtils.ln_s(r, "/etc/resolver", :force => true)
         end
       rescue Errno::EACCES => e
         warn "vagrant-dns needs superuser access to manipulate DNS settings"
