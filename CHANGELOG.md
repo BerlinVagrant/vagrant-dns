@@ -1,3 +1,8 @@
+# v0.2.3
+
+* Remove unneeded iteraton in installers/mac.rb. (thanks to JonathanTron for reporting)
+* Fix crash when no tld option was given.
+
 # v0.2.2
 
 * Default to 127.0.0.1 when no network option is given
