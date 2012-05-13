@@ -24,9 +24,13 @@ module VagrantDNS
     def pattern=(pattern)
       self.patterns = pattern
     end
-    
+
     def tld=(tld)
       @tlds = Array(tld)
+    end
+
+    def tlds
+      @tlds ||= []
     end
 
     # explicit hash, to get symbols in hash keys
