@@ -1,3 +1,7 @@
+# v0.2.4
+
+* Enable passthrough in DNS service. Helpful if you insist to hook a standard tld like .io.
+
 # v0.2.3
 
 * Remove unneeded iteraton in installers/mac.rb. (thanks to JonathanTron for reporting)
