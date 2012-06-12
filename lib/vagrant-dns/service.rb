@@ -19,26 +19,14 @@ module VagrantDNS
 
     def run!(run_options)
       Daemons.run_proc("vagrant-dns", run_options) do
-        require 'resolv'
         require 'rubydns'
-
-        # come on, this is Ruby
-        # Ruby 1.9.3 does not implement :make_requester anymore
-        # Luckily :make_udp_requester is just the same
-        begin
-          Resolv::DNS.instance_method(:make_requester)
-        rescue NameError
-          Resolv::DNS.class_eval { 
-            alias :make_requester :make_udp_requester
-          }
-        end
 
         registry = YAML.load(File.read(config_file))
         std_resolver = Resolv::DNS.new
 
         RubyDNS::run_server(:listen => VagrantDNS::Config.listen) do
           registry.each do |pattern, ip|
-            match(Regexp.new(pattern), :A) do |match_data, transaction|
+            match(Regexp.new(pattern), Resolv::DNS::Resource::IN::A) do |match_data, transaction|
               transaction.respond!(ip)
             end
           end
