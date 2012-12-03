@@ -35,5 +35,3 @@ module VagrantDNS
     end
   end
 end
-
-
