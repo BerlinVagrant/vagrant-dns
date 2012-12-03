@@ -1,3 +1,7 @@
+# v0.3.0
+
+* Using RubyDNS v0.5.x
+
 # v0.2.5
 
 * Using RubyDNS 0.4.x
