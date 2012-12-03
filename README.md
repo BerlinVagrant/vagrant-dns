@@ -84,5 +84,6 @@ The DNS server will start automatically once the first VM is started.
 
 * A records only
 * no ipv6 support
-* OS X only (please read: [Platform Support](PLATFORM_SUPPORT.md) before ranting about this).
+* OS X only (please read: [Platform
+  Support](https://github.com/BerlinVagrant/vagrant-dns/blob/master/PLATFORM_SUPPORT.md) before ranting about this).
 * Not visible inside the box
