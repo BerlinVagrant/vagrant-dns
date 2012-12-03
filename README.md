@@ -85,4 +85,3 @@ The DNS server will start automatically once the first VM is started.
 * A records only
 * no ipv6 support
 * OS X only
-* Alpha code
