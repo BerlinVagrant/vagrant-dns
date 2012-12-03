@@ -5,7 +5,7 @@ Vagrant-DNS only supports OS X at the moment. This has 2 main reasons:
 
 1) All main developers are on OS X and have no good idea how to properly implement such a system for other OSes. Also, OS X makes it incredibly easy to do what vagrant-dns does.
 
-2) We spoke to multiple Linux and Windows-Developers and found that a half-baked implementation of people not invested at the respective platform as a _convenient development_ platform is only harmful and might at worst mess with users systems in unintended ways.
+2) We spoke to multiple Linux and Windows-Developers and found that a half-baked implementation of people not invested at the respective platform as a _convenient development_ platform is only harmful and might at worst mess with users systems in unintended ways. None of them have supplied us with a proper way to implement this.
 
 That said, we will happily accept any patches and want to encourage platform support beyond OS X, including ensuring further development of those solutions. Some of the groundwork for this has been layed. It might not be 100% finished, but we happily apply any changes necessary.
 
