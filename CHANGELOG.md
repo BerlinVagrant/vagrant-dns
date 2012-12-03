@@ -1,3 +1,7 @@
+# v0.2.5
+
+* Using RubyDNS 0.4.x
+
 # v0.2.4
 
 * Enable passthrough in DNS service. Helpful if you insist to hook a standard tld like .io.
