@@ -1,6 +1,6 @@
 # v0.3.0
 
-* Using RubyDNS v0.5.x
+* Using RubyDNS ~> 0.5.3
 
 # v0.2.5
 
