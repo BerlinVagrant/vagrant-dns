@@ -43,7 +43,7 @@ Linux
 To help anyone that attempts a Linux implementation, here is what has already been tried.
 
 * Editing resolv.conf: Linux resolv.conf (in contrast to, say OpenBSD) does not allow you to set a port number for the DNS server. Also, its size is limited to 3 servers and the file is often under OS control, so messing around with it might not be advisable.
-* Setting up dnsmasq: this is certainly an option, but we couldn't find out how invasive this was, which Linux flavors might already come with dnsmasq configurations and how not to generally shoot other people in the foot with it. User help is needed.
+* Setting up dnsmasq: this is certainly an option, but we couldn't find out how invasive this was, which Linux flavors might already come with dnsmasq configurations and how not to shoot other people in the foot with it. User help is needed.
 
 (Open)BSD
 =========
