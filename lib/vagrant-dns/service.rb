@@ -20,9 +20,10 @@ module VagrantDNS
     def run!(run_options)
       Daemons.run_proc("vagrant-dns", run_options) do
         require 'rubydns'
+        require 'rubydns/system'
 
         registry = YAML.load(File.read(config_file))
-        std_resolver = Resolv::DNS.new
+        std_resolver = RubyDNS::Resolver.new(RubyDNS::System::nameservers)
 
         RubyDNS::run_server(:listen => VagrantDNS::Config.listen) do
           registry.each do |pattern, ip|
