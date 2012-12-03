@@ -17,5 +17,5 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency "vagrant"
   gem.add_dependency "daemons"
-  gem.add_dependency "rubydns", "~> 0.4"
+  gem.add_dependency "rubydns", "~> 0.4.0"
 end
