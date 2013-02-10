@@ -36,7 +36,7 @@ VagrantDNS::Config.logger = Logger.new("dns.log")
 Then, register the DNS server as a resolver. RVM users must use `rvmsudo` instead of `sudo`:
 
 ```bash
-$ sudo vagrant dns --install
+$ vagrant dns --install
 ```
 
 On OS X, this will create a file `/etc/resolver/dev`, which tells OS X to resolve the TLD `.dev` by using the nameserver given in this file. You will have to rerun --install every time a tld is added.
@@ -44,7 +44,7 @@ On OS X, this will create a file `/etc/resolver/dev`, which tells OS X to resolv
 You can delete this file by running:
 
 ```bash
-$ sudo vagrant dns --uninstall
+$ vagrant dns --uninstall
 ```
 
 Then, run the DNS server:
