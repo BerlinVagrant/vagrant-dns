@@ -9,24 +9,20 @@ module VagrantDNS
 
       def install!
         require 'fileutils'
-        FileUtils.mkdir_p(install_path)
 
-        FileUtils.ln_s(registered_resolvers, install_path, :force => true)
-      rescue Errno::EACCES => e
-        warn "vagrant-dns needs superuser access to manipulate DNS settings"
-        raise e
+        `sudo mkdir -p #{install_path}`
+        registered_resolvers.each do |resolver|
+          `sudo ln -sf #{resolver} #{install_path}`
+        end
       end
 
       def uninstall!
         require 'fileutils'
 
         registered_resolvers.each do |r|
-          resolver = File.join(install_path, File.basename(r))
-          FileUtils.rm_f(resolver)
+          installed_resolver = File.join(install_path, File.basename(r))
+          `sudo rm -rf #{installed_resolver}`
         end
-      rescue Errno::EACCES => e
-        warn "vagrant-dns needs superuser access to manipulate DNS settings"
-        raise e
       end
 
       def registered_resolvers
