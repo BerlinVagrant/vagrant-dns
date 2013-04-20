@@ -6,15 +6,11 @@
 
 If you use the gem version of Vagrant, use:
 
-    $ gem install vagrant-dns
-
-otherwise, use:
-
-    $ vagrant gem install vagrant-dns
+    $ vagrant plugin install vagrant-dns
 
 ## Usage
 
-In addition to your networking config, configure a toplevel domain and a `host_name` for your machine. Optionally, configure a set of free matching patterns. Global configuration options can be given through the `VagrantDNS::Config` object:
+In addition to your networking config, configure a toplevel domain and a `hostname` for your machine. Optionally, configure a set of free matching patterns. Global configuration options can be given through the `VagrantDNS::Config` object:
 
 ```ruby
 Vagrant::Config.run do |config|
@@ -22,11 +18,11 @@ Vagrant::Config.run do |config|
   
   config.dns.tld = "dev"
   
-  config.vm.host_name = "machine"
+  config.vm.hostname = "machine"
   
   config.dns.patterns = [/^.*mysite.dev$/, /^.*myothersite.dev$/]
   
-  config.vm.network :hostonly, "33.33.33.60"
+  config.vm.network :private_network, ip: "33.33.33.60"
 end
 
 # optional

@@ -6,9 +6,11 @@ module VagrantDNS
     end
 
     def call(env)
+      @env = env
+      vm = env[:vm] || env[:machine]
       if VagrantDNS::Config.auto_run
-        tmp_path = File.join(env[:vm].env.tmp_path, "dns")
-        VagrantDNS::Configurator.new(env[:vm], tmp_path).run!
+        tmp_path = File.join(vm.env.tmp_path, "dns")
+        VagrantDNS::Configurator.new(vm, tmp_path).run!
         VagrantDNS::Service.new(tmp_path).restart!
         env[:ui].info "Restarted DNS Service"
       end

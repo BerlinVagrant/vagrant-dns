@@ -1,7 +1,7 @@
 require 'logger'
 
 module VagrantDNS
-  class Config < Vagrant::Config::Base
+  class Config < Vagrant.plugin(2, :config)
     class << self
       attr_accessor :listen, :logger, :ipv4only, :auto_run
 
