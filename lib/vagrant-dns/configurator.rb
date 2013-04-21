@@ -35,10 +35,14 @@ module VagrantDNS
         registry ||= {}
         opts     = dns_options(vm)
         patterns = opts[:patterns] || default_patterns(opts)
-        network  = opts[:networks].first
+        networks = opts[:networks]
+        network = {}
+	networks.each do |nw|
+          network = nw if nw.first == :private_network
+	end
 
         if network
-          ip     = network.last.first
+          ip     = network.last[:ip]
         else
           ip     = '127.0.0.1'
         end
@@ -53,7 +57,7 @@ module VagrantDNS
 
       def dns_options(vm)
         dns_options = vm.config.dns.to_hash
-        dns_options[:host_name] = vm.config.vm.host_name
+        dns_options[:host_name] = vm.config.vm.hostname
         dns_options[:networks] = vm.config.vm.networks
         dns_options
       end

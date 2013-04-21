@@ -1,3 +1,6 @@
+require 'daemons'
+
+
 module VagrantDNS
   class Service
     attr_accessor :tmp_path, :options
