@@ -1,4 +1,6 @@
 require "vagrant-dns/version"
+require "vagrant-dns/config"
+
 require "vagrant-dns/service"
 require "vagrant-dns/installers/mac"
 require "vagrant-dns/restart_middleware"
@@ -11,7 +13,6 @@ module VagrantDNS
     name "vagrant-dns"
 
     config "dns" do
-      require File.expand_path("../vagrant-dns/config", __FILE__)
       Config
     end
 
