@@ -1,3 +1,10 @@
+# v0.4.0
+
+**This version is not compatible to vagrant < 1.2**
+
+* Supports vagrant 1.2.x
+* Update RubyDNS ~> 0.6.0
+
 # v0.3.0
 
 * Using RubyDNS ~> 0.5.3
