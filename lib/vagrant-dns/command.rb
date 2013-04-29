@@ -29,11 +29,11 @@ module VagrantDNS
         opts.on("--stop", "-s", "Stop the DNS service") do
           options[:stop] = true
         end
-        
+
         opts.on("--restart", "-r", "Restart the DNS service") do
           options[:restart] = true
         end
-        
+
         opts.on("--ontop", "-o", "Start the DNS service on top. Debugging only, this blocks Vagrant!") do
           options[:ontop] = true
         end
@@ -42,15 +42,38 @@ module VagrantDNS
       argv = parse_options(opts)
       return if !argv
 
-      dns_options = []
-      
       vms = argv unless argv.empty?
-      tmp_path = File.join(@env.tmp_path, "dns")
-      
-      with_target_vms(vms) { |vm| VagrantDNS::Configurator.new(vm, tmp_path).run! }
 
+      if options[:uninstall]
+        manage_service(vms, options.merge(stop: true))
+        manage_installation(vms, options)
+      else
+        build_config(vms, options)
+        manage_service(vms, options)
+        manage_installation(vms, options) if options[:install]
+      end
+
+    end
+
+    protected
+
+    def manage_installation(vms, options)
+      if RbConfig::CONFIG["host_os"].match /darwin/
+        installer = VagrantDNS::Installers::Mac.new(tmp_path)
+
+        if options[:install]
+          installer.install!
+        elsif options[:uninstall]
+          installer.uninstall!
+        end
+      else
+        raise 'installing and uninstalling is only supported on Mac OS X at the moment.'
+      end
+    end
+
+    def manage_service(vms, options)
       service = VagrantDNS::Service.new(tmp_path, options)
-      
+
       if options[:start]
         service.start!
       elsif options[:stop]
@@ -58,20 +81,14 @@ module VagrantDNS
       elsif options[:restart]
         service.restart!
       end
+    end
 
-      if options[:install] || options[:uninstall]
-        if RbConfig::CONFIG["host_os"].match /darwin/
-          installer = VagrantDNS::Installers::Mac.new(tmp_path)
-          
-          if options[:install]
-            installer.install!
-          elsif options[:uninstall]
-            installer.uninstall!
-          end
-        else
-          raise 'installing and uninstalling is only supported on Mac OS X at the moment.'
-        end
-      end
+    def build_config(vms, options)
+      with_target_vms(vms) { |vm| VagrantDNS::Configurator.new(vm, tmp_path).run! }
+    end
+
+    def tmp_path
+      File.join(@env.tmp_path, "dns")
     end
   end
 end
