@@ -30,7 +30,7 @@ module VagrantDNS
 
         RubyDNS::run_server(:listen => VagrantDNS::Config.listen) do
           registry.each do |pattern, ip|
-            match(Regexp.new(pattern), Resolv::DNS::Resource::IN::A) do |match_data, transaction|
+            match(Regexp.new(pattern), Resolv::DNS::Resource::IN::A) do |transaction, match_data|
               transaction.respond!(ip)
             end
           end
