@@ -7,7 +7,7 @@ module VagrantDNS
 
     def call(env)
       @env = env
-      vm = env[:vm] || env[:machine]
+      vm = env[:machine]
       if VagrantDNS::Config.auto_run
         tmp_path = File.join(vm.env.tmp_path, "dns")
         VagrantDNS::Configurator.new(vm, tmp_path).run!
