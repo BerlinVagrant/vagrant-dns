@@ -11,7 +11,7 @@ module VagrantDNS
     def execute
       options = {}
       opts = OptionParser.new do |opts|
-        opts.banner = "Usage: vagrant dns [vm-name] [-i|--install] [-u|--uninstall] [-s|--start] [-S|--stop] [-r|--restart] [-o|--ontop]"
+        opts.banner = "Usage: vagrant dns [vm-name] [-i|--install] [-u|--uninstall] [--pruge] [-s|--start] [-S|--stop] [-r|--restart] [-o|--ontop]"
         opts.separator ""
 
         opts.on("--install", "-i", "Install DNS config for machine domain") do
@@ -20,6 +20,11 @@ module VagrantDNS
 
         opts.on("--uninstall", "-u", "Uninstall DNS config for machine domain") do
           options[:uninstall] = true
+        end
+
+        opts.on("--purge", "Uninstall DNS config and remove DNS configurations of all machines.") do
+          options[:uninstall] = true
+          options[:purge] = true
         end
 
         opts.on("--start", "-s", "Start the DNS service") do
@@ -47,6 +52,11 @@ module VagrantDNS
       if options[:uninstall]
         manage_service(vms, options.merge(stop: true))
         manage_installation(vms, options)
+
+        if options[:purge]
+          require 'fileutils'
+          FileUtils.rm_r(tmp_path)
+        end
       else
         build_config(vms, options)
         manage_service(vms, options)
