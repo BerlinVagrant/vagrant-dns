@@ -6,7 +6,7 @@ require "vagrant-dns/configurator"
 
 module VagrantDNS
 
-  class VagrantDns < Vagrant.plugin("2")
+  class Plugin < Vagrant.plugin("2")
 
     name "vagrant-dns"
 
