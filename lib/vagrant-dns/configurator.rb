@@ -37,9 +37,9 @@ module VagrantDNS
         patterns = opts[:patterns] || default_patterns(opts)
         networks = opts[:networks]
         network = {}
-	networks.each do |nw|
+        networks.each do |nw|
           network = nw if nw.first == :private_network
-	end
+        end
 
         if network
           ip     = network.last[:ip]
@@ -49,9 +49,9 @@ module VagrantDNS
 
         patterns.each do |p|
           p = p.source if p.respond_to? :source # Regexp#to_s is unusable
-          registry[p] = ip 
+          registry[p] = ip
         end
-        
+
         File.open(config_file, "w") { |f| f << YAML.dump(registry) }
       end
 
@@ -78,15 +78,15 @@ nameserver 127.0.0.1
 port #{port}
 FILE
       end
-      
+
       def resolver_folder
         File.join(tmp_path, "resolver")
       end
-      
+
       def ensure_deamon_env!
         FileUtils.mkdir_p(File.join(tmp_path, "daemon"))
       end
-      
+
       def config_file
         File.join(tmp_path, "config")
       end
