@@ -21,8 +21,10 @@ module VagrantDNS
       Command
     end
 
-    action_hook(self::ALL_ACTIONS) do |hook|
-      hook.after(VagrantPlugins::ProviderVirtualBox::Action::Boot, VagrantDNS::RestartMiddleware)
+    %w{up reload}.each do |action|
+      action_hook(:restart_host_dns, "machine_action_#{action}".to_sym) do |hook|
+        hook.append VagrantDNS::RestartMiddleware
+      end
     end
 
   end
