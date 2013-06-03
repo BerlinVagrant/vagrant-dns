@@ -5,6 +5,7 @@
 * Supports vagrant 1.2.x [GH-17]
 * Update RubyDNS ~> 0.6.0
 * Fixes an issue where user-space files got created as root [GH-12]
+* Adds command line option `--purge` which deletes the created config file (not only the system symlink to it) [GH-3]
 
 # v0.3.0
 

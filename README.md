@@ -4,8 +4,6 @@
 
 ## Installation
 
-If you use the gem version of Vagrant, use:
-
     $ vagrant plugin install vagrant-dns
 
 ## Usage
@@ -13,16 +11,16 @@ If you use the gem version of Vagrant, use:
 In addition to your networking config, configure a toplevel domain and a `hostname` for your machine. Optionally, configure a set of free matching patterns. Global configuration options can be given through the `VagrantDNS::Config` object:
 
 ```ruby
-Vagrant::Config.run do |config|
+Vagrant.configure("2") do |config|
   #...
-  
+
   config.dns.tld = "dev"
-  
+
   config.vm.hostname = "machine"
-  
+
   config.dns.patterns = [/^.*mysite.dev$/, /^.*myothersite.dev$/]
-  
-  config.vm.network :private_network, ip: "33.33.33.60"
+
+  config.vm.network :patternsrivate_network, ip: "33.33.33.60"
 end
 
 # optional
@@ -41,6 +39,13 @@ You can delete this file by running:
 
 ```bash
 $ vagrant dns --uninstall
+```
+
+To also delete the created config file for this TLD (`~/.vagrant.d/tmp/dns/resolver/dev` in our example) run:
+
+
+```bash
+$ vagrant dns --purge
 ```
 
 Then, run the DNS server:
