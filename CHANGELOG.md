@@ -2,8 +2,9 @@
 
 **This version is not compatible to vagrant < 1.2**
 
-* Supports vagrant 1.2.x
+* Supports vagrant 1.2.x [GH-17]
 * Update RubyDNS ~> 0.6.0
+* Fixes an issue where user-space files got created as root [GH-12]
 
 # v0.3.0
 
