@@ -20,7 +20,7 @@ Vagrant.configure("2") do |config|
 
   config.dns.patterns = [/^.*mysite.dev$/, /^.*myothersite.dev$/]
 
-  config.vm.network :patternsrivate_network, ip: "33.33.33.60"
+  config.vm.network :private_network, ip: "33.33.33.60"
 end
 
 # optional
