@@ -41,7 +41,7 @@ module VagrantDNS
           network = nw if nw.first == :private_network
         end
 
-        if network
+        if ! network.empty?
           ip     = network.last[:ip]
         else
           ip     = '127.0.0.1'
