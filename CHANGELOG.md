@@ -1,3 +1,7 @@
+# v0.4.1
+
+* Fixes an issue with not configured private networks [GH-21], [GH-19]
+
 # v0.4.0
 
 **This version is not compatible to vagrant < 1.2**
