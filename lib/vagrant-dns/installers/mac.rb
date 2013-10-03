@@ -10,19 +10,22 @@ module VagrantDNS
       def install!
         require 'fileutils'
 
-        `sudo mkdir -p #{install_path}`
+        command = "mkdir -p #{install_path}\n"
         registered_resolvers.each do |resolver|
-          `sudo ln -sf #{resolver} #{install_path}`
+          command += "ln -sf #{resolver} #{install_path}\n"
         end
+        `osascript -e 'do shell script \"#{command}\" with administrator privileges'`
       end
 
       def uninstall!
         require 'fileutils'
 
+        command = ""
         registered_resolvers.each do |r|
           installed_resolver = File.join(install_path, File.basename(r))
-          `sudo rm -rf #{installed_resolver}`
+          command += "rm -rf #{installed_resolver}\n"
         end
+        `osascript -e 'do shell script \"#{command}\" with administrator privileges'`
       end
 
       def registered_resolvers
