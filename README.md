@@ -27,7 +27,7 @@ end
 VagrantDNS::Config.logger = Logger.new("dns.log")
 ```
 
-Then, register the DNS server as a resolver. RVM users must use `rvmsudo` instead of `sudo`:
+Then, register the DNS server as a resolver:
 
 ```bash
 $ vagrant dns --install
