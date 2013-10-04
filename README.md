@@ -27,7 +27,7 @@ end
 VagrantDNS::Config.logger = Logger.new("dns.log")
 ```
 
-Then, register the DNS server as a resolver. RVM users must use `rvmsudo` instead of `sudo`:
+Then, register the DNS server as a resolver:
 
 ```bash
 $ vagrant dns --install
@@ -57,10 +57,27 @@ $ vagrant dns --start
 And test it:
 
 ```bash
-$ dig @localhost -p 5300 test.machine.dev
+$ scutil --dns
+...
+resolver #8
+  domain   : dev
+  nameserver[0] : 127.0.0.1
+  port     : 5300
+...
+$ dscacheutil -q host -a name test.machine.dev
+name: test.machine.dev
+ip_address: 33.33.33.10
 ```
 
 You can now reach the server under the given domain.
+
+**Note:** Mac OS X is quite different from Linux regarding DNS resolution. As a result, do not use
+`dig` or `nslookup`, but `dscacheutil` instead. Read [this article](http://apple.stackexchange.com/a/70583)
+for more information.
+
+**Note:** Chrome users could still encounter problems resolving hosts in the development subdomain(s).
+If this is the case, make sure to turn of the [Built-in Asynchronous DNS](https://plus.google.com/100132233764003563318/posts/JXcvYw1yCkH)
+client. The built-in DNS client not handling split DNS is [reported](https://code.google.com/p/chromium/issues/detail?id=265970).
 
 Finally, stop the server using:
 
