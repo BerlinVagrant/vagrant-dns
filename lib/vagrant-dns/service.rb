@@ -5,18 +5,17 @@ module VagrantDNS
   class Service
     attr_accessor :tmp_path, :options
     
-    def initialize(tmp_path, options = {})
+    def initialize(tmp_path)
       self.tmp_path = tmp_path
-      self.options = options
     end
 
     def start!
-      run_options = {:ARGV => ["start"]}.merge(options).merge(runopts)
+      run_options = {:ARGV => ["start"]}.merge(runopts)
       run!(run_options)
     end
 
     def stop!
-      run_options = {:ARGV => ["stop"]}.merge(options).merge(runopts)
+      run_options = {:ARGV => ["stop"]}.merge(runopts)
       run!(run_options)
     end
 

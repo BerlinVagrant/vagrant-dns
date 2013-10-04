@@ -82,7 +82,7 @@ module VagrantDNS
     end
 
     def manage_service(vms, options)
-      service = VagrantDNS::Service.new(tmp_path, options)
+      service = VagrantDNS::Service.new(tmp_path)
 
       if options[:start]
         service.start!
