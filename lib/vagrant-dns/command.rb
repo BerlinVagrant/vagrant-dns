@@ -1,6 +1,6 @@
 require 'optparse'
 require 'daemons'
-require 'rbconfig'
+require 'vagrant'
 
 module VagrantDNS
 
@@ -68,7 +68,7 @@ module VagrantDNS
     protected
 
     def manage_installation(vms, options)
-      if RbConfig::CONFIG["host_os"].match /darwin/
+      if Vagrant::Util::Platform.darwin?
         installer = VagrantDNS::Installers::Mac.new(tmp_path)
 
         if options[:install]
