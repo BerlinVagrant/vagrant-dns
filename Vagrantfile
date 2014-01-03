@@ -1,6 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+Vagrant.require_plugin "vagrant-dns"
 
 Vagrant.configure("2") do |config|
   # All Vagrant configuration is done here. The most common configuration
@@ -16,6 +17,6 @@ Vagrant.configure("2") do |config|
   config.vm.hostname = "machine"
   config.vm.network :private_network, ip: "33.33.33.60"
 
-  
+
   VagrantDNS::Config.listen = [[:udp, "0.0.0.0", 5300]]
 end
