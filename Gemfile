@@ -9,3 +9,7 @@ group :development do
   # Vagrant environment itself using `vagrant plugin`.
   gem "vagrant", :git => "git://github.com/mitchellh/vagrant.git"
 end
+
+group :plugins do
+  gem "vagrant-dns", path: "."
+end
