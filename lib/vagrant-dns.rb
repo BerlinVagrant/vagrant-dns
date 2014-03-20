@@ -5,6 +5,7 @@ require "vagrant-dns/service"
 require "vagrant-dns/installers/mac"
 require "vagrant-dns/restart_middleware"
 require "vagrant-dns/configurator"
+require "vagrant-dns/command"
 
 module VagrantDNS
 

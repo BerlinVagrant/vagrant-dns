@@ -10,17 +10,24 @@ module VagrantDNS
     end
 
     def start!
-      run_options = {:ARGV => ["start"]}.merge(runopts)
-      run!(run_options)
+      run!("start")
     end
 
     def stop!
-      run_options = {:ARGV => ["stop"]}.merge(runopts)
-      run!(run_options)
+      run!("stop")
     end
 
-    def run!(run_options)
-      Daemons.run_proc("vagrant-dns", run_options) do
+    def run!(action)
+      if privileged_port? and Process.uid > 0
+        system(*(['sudo'] + VagrantDNS::Command.executable + ["--#{action}"]))
+      else
+        run_options = {:ARGV => [action]}.merge(runopts)
+        run_daemon!(run_options)
+      end
+    end
+
+    def run_daemon!(options)
+      Daemons.run_proc("vagrant-dns", options) do
         require 'rubydns'
         require 'rubydns/system'
 
@@ -58,6 +65,11 @@ module VagrantDNS
     
     def config_file
       File.join(tmp_path, "config")
+    end
+
+    def privileged_port?
+      privileged_servers = VagrantDNS::Config.listen.select { |server| server.last < 1024 }
+      !privileged_servers.empty?
     end
   end
 end
