@@ -65,6 +65,14 @@ module VagrantDNS
 
     end
 
+    def self.executable
+      if Bundler::SharedHelpers.in_bundle?
+        ['bundle', 'exec', 'vagrant', 'dns']
+      else
+        ['vagrant', 'dns']
+      end
+    end
+
     protected
 
     def manage_installation(vms, options)
