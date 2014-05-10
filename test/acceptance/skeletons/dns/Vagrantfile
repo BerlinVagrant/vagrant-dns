@@ -1,0 +1,12 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "box"
+  config.vm.network :private_network, ip: '10.10.10.101'
+
+  config.dns.tld      = 'spec'
+  config.dns.patterns = /^.*single.testbox.spec$/
+
+  VagrantDNS::Config.listen = [[:udp, "0.0.0.0", 5333]]
+end
