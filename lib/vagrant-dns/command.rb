@@ -11,7 +11,7 @@ module VagrantDNS
     def execute
       options = {}
       opts = OptionParser.new do |opts|
-        opts.banner = "Usage: vagrant dns [vm-name] [-i|--install] [-u|--uninstall] [--pruge] [-s|--start] [-S|--stop] [-r|--restart] [-o|--ontop]"
+        opts.banner = "Usage: vagrant dns [vm-name] [-i|--install] [-u|--uninstall] [--with-sudo] [--pruge] [-s|--start] [-S|--stop] [-r|--restart] [-o|--ontop]"
         opts.separator ""
 
         opts.on("--install", "-i", "Install DNS config for machine domain") do
@@ -22,8 +22,11 @@ module VagrantDNS
           options[:uninstall] = true
         end
 
+        opts.on("--with-sudo", "In conjunction with `--install`, `--uninstall`, `--purge`: Run using `sudo` instead of `osascript`. Useful for automated scripts running as sudoer.") do
+          options[:installer_opts] = { exec_style: :sudo }
+        end
+
         opts.on("--purge", "Uninstall DNS config and remove DNS configurations of all machines.") do
-          options[:uninstall] = true
           options[:purge] = true
         end
 
@@ -49,14 +52,9 @@ module VagrantDNS
 
       vms = argv unless argv.empty?
 
-      if options[:uninstall]
+      if options[:uninstall] || options[:purge]
         manage_service(vms, options.merge(stop: true))
         manage_installation(vms, options)
-
-        if options[:purge]
-          require 'fileutils'
-          FileUtils.rm_r(tmp_path)
-        end
       else
         build_config(vms, options)
         manage_service(vms, options)
@@ -69,12 +67,15 @@ module VagrantDNS
 
     def manage_installation(vms, options)
       if Vagrant::Util::Platform.darwin?
-        installer = VagrantDNS::Installers::Mac.new(tmp_path)
+        installer_options = options.fetch(:installer_opts, {})
+        installer = VagrantDNS::Installers::Mac.new(tmp_path, installer_options)
 
         if options[:install]
           installer.install!
         elsif options[:uninstall]
           installer.uninstall!
+        elsif options[:purge]
+          installer.purge!
         end
       else
         raise 'installing and uninstalling is only supported on Mac OS X at the moment.'
