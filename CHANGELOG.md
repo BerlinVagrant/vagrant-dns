@@ -9,6 +9,11 @@ This is a intermediate release towards v1.0.0
 * Add acceptance test using vagrant-spec
 * Moved sample `Vagrantfile` into `/testdrive` which also contains a small wrapper script `bin/vagrant` to move "vagrant home" into a sandbox.
 
+# 0.5.0
+
+* Use `osascript` to install system files, which require root privileges. [GH-18], [GH-22]
+* internal cleanups (@ringods)
+
 # v0.4.1
 
 * Fixes an issue with not configured private networks [GH-21], [GH-19]
