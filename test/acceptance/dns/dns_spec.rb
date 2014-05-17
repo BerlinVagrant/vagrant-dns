@@ -12,6 +12,7 @@ shared_examples 'provider/dns' do |provider, options|
   let(:name)   { 'single.testbox.spec' }
 
   before do
+    ENV['VAGRANT_DEFAULT_PROVIDER'] = provider
     environment.skeleton('dns')
   end
 
