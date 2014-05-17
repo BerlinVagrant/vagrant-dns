@@ -15,8 +15,7 @@ group :test, :development do
   else
     gem 'vagrant', :github => 'mitchellh/vagrant', :tag => ENV['TEST_VAGRANT_VERSION']
   end
-  # check rubydns v0.8.0
-  gem 'rubydns', :github => 'ioquatix/rubydns', :ref => '363c82e73449cda38cd70b8c49dd2a9a9e0e5d12'
+  gem 'rubydns', :github => 'ioquatix/rubydns', :branch => 'master'
 end
 
 group :test do

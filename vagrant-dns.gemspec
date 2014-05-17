@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
   gem.version       = Vagrant::Dns::VERSION
 
   gem.add_dependency "daemons"
-  gem.add_dependency "rubydns"
+  gem.add_dependency "rubydns", '~> 0.8.4'
 
   gem.add_development_dependency 'rspec', '~> 2.14.0'
 end
