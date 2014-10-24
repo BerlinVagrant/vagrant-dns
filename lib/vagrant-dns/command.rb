@@ -86,11 +86,11 @@ module VagrantDNS
       service = VagrantDNS::Service.new(tmp_path)
 
       if options[:start]
-        service.start!
+        service.start! :ontop => options[:ontop]
       elsif options[:stop]
         service.stop!
       elsif options[:restart]
-        service.restart!
+        service.restart! :ontop => options[:ontop]
       end
     end
 

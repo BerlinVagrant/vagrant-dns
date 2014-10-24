@@ -3,14 +3,17 @@ require 'daemons'
 
 module VagrantDNS
   class Service
-    attr_accessor :tmp_path, :options
-    
+    attr_accessor :tmp_path
+
     def initialize(tmp_path)
       self.tmp_path = tmp_path
     end
 
-    def start!
-      run_options = {:ARGV => ["start"]}.merge(runopts)
+    def start!(opts = {})
+      run_options = {
+        :ARGV => ["start"],
+        :ontop => opts[:ontop]
+      }.merge!(runopts)
       run!(run_options)
     end
 
@@ -44,18 +47,21 @@ module VagrantDNS
       end
     end
 
-    def restart!
+    def restart!(start_opts = {})
       stop!
-      start!
+      start!(start_opts)
     end
-    
+
     def runopts
-      {:dir_mode => :normal, 
-       :dir => File.join(tmp_path, "daemon"),
-       :log_output => true,
-       :log_dir => File.join(tmp_path, "daemon")}
+      daemon_dir = File.join(tmp_path, "daemon")
+      {
+        :dir_mode   => :normal,
+        :dir        => daemon_dir,
+        :log_output => true,
+        :log_dir    => daemon_dir
+     }
     end
-    
+
     def config_file
       File.join(tmp_path, "config")
     end
