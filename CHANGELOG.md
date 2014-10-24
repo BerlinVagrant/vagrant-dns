@@ -1,3 +1,14 @@
+# 0.6.0 (unreleased / beta1)
+
+This is a intermediate release towards v1.0.0
+
+* Using RubyDNS ~> 0.9.0
+* New option to un/install system files using `sudo` (restoring 0.4 behavior). Add optional `--with-sudo` flag to  `--install`, `--uninstall` or `--purge`. [GH-26]
+* Re-add `--ontop` flag. (Start `vagrant-dns` in foreground for debugging)
+* Use vagrant >= 1.5 development patterns [GH-31]
+* Add acceptance test using vagrant-spec
+* Moved sample `Vagrantfile` into `/testdrive` which also contains a small wrapper script `bin/vagrant` to move "vagrant home" into a sandbox.
+
 # v0.4.1
 
 * Fixes an issue with not configured private networks [GH-21], [GH-19]
