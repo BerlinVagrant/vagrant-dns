@@ -1,4 +1,4 @@
-# 0.6.0 (unreleased / beta1)
+# 0.6.0
 
 This is a intermediate release towards v1.0.0
 
