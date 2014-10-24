@@ -2,8 +2,8 @@
 require File.expand_path('../lib/vagrant-dns/version', __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.authors       = ["Florian Gilcher"]
-  gem.email         = ["florian.gilcher@asquera.de"]
+  gem.authors       = ["Florian Gilcher", "Robert Schulze"]
+  gem.email         = ["florian.gilcher@asquera.de", "robert@dotless.de"]
   gem.description   = %q{vagrant-dns is a vagrant plugin that manages DNS records associated with local machines.}
   gem.summary       = %q{vagrant-dns manages DNS records of vagrant machines}
   gem.homepage      = ""
