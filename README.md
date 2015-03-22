@@ -75,10 +75,6 @@ You can now reach the server under the given domain.
 `dig` or `nslookup`, but `dscacheutil` instead. Read [this article](http://apple.stackexchange.com/a/70583)
 for more information.
 
-**Note:** Chrome users could still encounter problems resolving hosts in the development subdomain(s).
-If this is the case, make sure to turn of the [Built-in Asynchronous DNS](https://plus.google.com/100132233764003563318/posts/JXcvYw1yCkH)
-client. The built-in DNS client not handling split DNS is [reported](https://code.google.com/p/chromium/issues/detail?id=265970).
-
 Finally, stop the server using:
 
 ```bash
@@ -100,8 +96,8 @@ The DNS server will start automatically once the first VM is started.
 
 ## Issues
 
-* A records only
-* no ipv6 support
+* `A` records only
+* No IPv6 support
 * OS X only (please read: [Platform
   Support](https://github.com/BerlinVagrant/vagrant-dns/blob/master/PLATFORM_SUPPORT.md) before ranting about this).
 * Not visible inside the box
