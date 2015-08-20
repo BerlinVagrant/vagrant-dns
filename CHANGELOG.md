@@ -1,3 +1,8 @@
+# 1.0.0
+
+* 🎉Release as 1.0 [GH-34]
+* Fixes compatibility to Vagrant 1.7.4 by using RubyDNS ~> 1.0.2 [GH-38]
+
 # 0.6.0
 
 This is a intermediate release towards v1.0.0
