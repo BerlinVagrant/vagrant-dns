@@ -15,7 +15,7 @@ group :test, :development do
   else
     gem 'vagrant', :github => 'mitchellh/vagrant', :tag => ENV['TEST_VAGRANT_VERSION']
   end
-  gem 'rubydns', '~> 0.9.0'
+  gem 'rubydns', '~> 1.0.2'
 end
 
 group :test do
