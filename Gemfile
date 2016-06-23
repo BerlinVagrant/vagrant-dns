@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
-ruby '2.0.0'
 
-ENV['TEST_VAGRANT_VERSION'] ||= '~> v1.7.4'
+ENV['TEST_VAGRANT_VERSION'] ||= 'v1.8.4'
 
 # Using the :plugins group causes Vagrant to automagially load auto_network
 # during acceptance tests.
@@ -15,7 +14,6 @@ group :test, :development do
   else
     gem 'vagrant', :github => 'mitchellh/vagrant', :tag => ENV['TEST_VAGRANT_VERSION']
   end
-  gem 'rubydns', '~> 1.0.2'
 end
 
 group :test do
