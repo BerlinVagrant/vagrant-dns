@@ -8,7 +8,7 @@ Gem::Specification.new do |gem|
   gem.summary       = %q{vagrant-dns manages DNS records of vagrant machines}
   gem.homepage      = ""
 
-  gem.files         = `git ls-files`.split($\)
+  gem.files         = `git ls-files`.split($\).reject { |f| f.match(%r{^(test|spec|features|testdrive)/}) }
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.name          = "vagrant-dns"
@@ -18,5 +18,5 @@ Gem::Specification.new do |gem|
   gem.add_dependency "daemons"
   gem.add_dependency "rubydns", '~> 1.0.2'
 
-  gem.add_development_dependency 'rspec', '~> 2.14.0'
+  gem.add_development_dependency 'rspec'
 end
