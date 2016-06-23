@@ -19,10 +19,10 @@ shared_examples 'provider/dns' do |provider, options|
   describe 'installation' do
     it 'creates and removes resolver link' do
       assert_execute('vagrant', 'dns', '--install', '--with-sudo')
-      assert_execute('ls', "/etc/resolver/#{tld}")
+      assert_execute('sudo', 'ls', "/etc/resolver/#{tld}")
 
       assert_execute('vagrant', 'dns', '--uninstall', '--with-sudo')
-      result = execute('ls', "/etc/resolver/#{tld}")
+      result = execute('sudo', 'ls', "/etc/resolver/#{tld}")
       expect(result).to_not exit_with(0)
     end
   end
@@ -45,16 +45,19 @@ shared_examples 'provider/dns' do |provider, options|
     end
 
     it 'registered as a resolver' do
-      expected_output = <<-TXT
-  domain   : #{tld}
-  nameserver[0] : 127.0.0.1
-  port     : 5333
-  flags    : Request A records, Request AAAA records
-  reach    : Reachable,Local Address
-      TXT
+      result = assert_execute('scutil', '--dns').stdout.lines
+      start  = result.find_index {|l| l =~ /^\s*domain\s*:\s*#{tld}$/} - 1
+      offset = result[start..-1].find_index {|l| l == "\n"} - 1
 
-      result = assert_execute('scutil', '--dns')
-      expect(result.stdout).to include(expected_output)
+      resolver = result[start..(start + offset)]
+
+      expect(resolver).to include(match /^\s*port\s*:\s*5333$/)
+      expect(resolver).to include(match /^\s*flags\s*:\s*Request A records, Request AAAA records$/)
+      expect(resolver).to include(match /^\s*port\s*:\s*5333$/)
+      expect(resolver).to include(match /\bReachable\b/)
+      expect(resolver).to_not include(match /\bNot Reachable\b/i)
+      expect(resolver).to include(match /\bReachable\b/)
+      expect(resolver).to include(match /\bLocal Address\b/)
     end
 
     it 'responds to host-names' do
