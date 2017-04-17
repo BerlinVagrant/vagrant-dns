@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby(ENV['TEST_RUBY_VERSION'] || '~> 2.2.5')
+ruby(ENV['TEST_RUBY_VERSION'] || '~> 2.2.6')
 
 ENV['TEST_VAGRANT_VERSION'] ||= 'v1.9.3'
 
@@ -15,7 +15,7 @@ group :test, :development do
   else
     gem 'vagrant', :github => 'mitchellh/vagrant', :tag => ENV['TEST_VAGRANT_VERSION']
   end
-  gem 'rubydns', '~> 1.0.2'
+  gem 'rubydns', '~> 2.0.0.pre.rc1'
 end
 
 group :test do
