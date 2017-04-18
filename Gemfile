@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
-ruby '2.0.0'
+ruby(ENV['TEST_RUBY_VERSION'] || '~> 2.2.5')
 
-ENV['TEST_VAGRANT_VERSION'] ||= '~> v1.7.4'
+ENV['TEST_VAGRANT_VERSION'] ||= 'v1.9.3'
 
 # Using the :plugins group causes Vagrant to automagially load auto_network
 # during acceptance tests.
