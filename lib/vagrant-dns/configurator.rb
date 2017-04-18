@@ -38,7 +38,7 @@ module VagrantDNS
         networks = opts[:networks]
         network = {}
         networks.each do |nw|
-          network = nw if nw.first == :private_network
+          network = nw if nw.first == :private_network && nw.last[:type] != 'dhcp'
         end
 
         if ! network.empty?
