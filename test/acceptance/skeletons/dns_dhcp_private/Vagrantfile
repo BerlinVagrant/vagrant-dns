@@ -1,0 +1,16 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "box"
+  config.vm.network :private_network, type: :dhcp
+
+  # we don't need synced_folder, also they might lead to failures due
+  # to guest additions mismatches
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+
+  config.dns.tld      = 'spec'
+  config.dns.patterns = /^.*dhcp-private.testbox.spec$/
+
+  VagrantDNS::Config.listen = [[:udp, "0.0.0.0", 5333]]
+end

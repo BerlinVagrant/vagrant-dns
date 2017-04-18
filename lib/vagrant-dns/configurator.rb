@@ -31,21 +31,33 @@ module VagrantDNS
       end
 
       def register_patterns!
-        registry = YAML.load(File.read(config_file)) if File.exists?(config_file)
-        registry ||= {}
         opts     = dns_options(vm)
+
         patterns = opts[:patterns] || default_patterns(opts)
-        networks = opts[:networks]
-        network = {}
-        networks.each do |nw|
-          network = nw if nw.first == :private_network
+        if patterns.empty?
+         vm.ui.warn '[vagrant-dns] TLD but no host_name given. No patterns will be configured.'
+         return
         end
 
-        if ! network.empty?
-          ip     = network.last[:ip]
-        else
-          ip     = '127.0.0.1'
+        network = opts[:networks].find do |nw|
+          nw.first == :private_network && nw.last[:ip]
         end
+
+        unless network
+          network = opts[:networks].find do |nw|
+            nw.first == :public_network && nw.last[:ip]
+          end
+        end
+
+        unless network
+          vm.ui.warn '[vagrant-dns] Could not find any static network IP. No patterns will be configured.'
+          return
+        end
+
+        ip = network.last[:ip]
+
+        registry = YAML.load(File.read(config_file)) if File.exists?(config_file)
+        registry ||= {}
 
         patterns.each do |p|
           p = p.source if p.respond_to? :source # Regexp#to_s is unusable
@@ -66,7 +78,6 @@ module VagrantDNS
         if opts[:host_name]
           opts[:tlds].map { |tld| /^.*#{opts[:host_name]}.#{tld}$/ }
         else
-          warn 'TLD but no host_name given. No patterns will be configured.'
           []
         end
       end
