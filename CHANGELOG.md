@@ -1,3 +1,11 @@
+# 1.1.0
+
+* Fixes handling of networks without static IP, such as DHCP. [GH-37], [GH-39], [GH-50]
+* Add support for boxes with `public_network` and static IP.
+* Breaking: No longer falls back to `127.0.0.1` when no IP could be found.
+* Log messages will now be tagged with the related box (vm) and `[vagrant-dns]`
+* Develepment targets Vagrant 1.9.3
+
 # 1.0.0
 
 * 🎉Release as 1.0 [GH-34]
