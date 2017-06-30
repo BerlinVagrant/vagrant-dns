@@ -6,7 +6,7 @@
 
     $ vagrant plugin install vagrant-dns
 
-**Attention: As of v2.0.0, vagrant-dns requires vagrant >= 1.9.6 **(because it ships with a more modern version of ruby)  
+**Attention: As of v2.0.0, vagrant-dns requires vagrant >= 1.9.6** (because it ships with a more modern version of ruby)  
 If you get an error like `rubydns requires Ruby version >= 2.2.6.` while installing, you probably need to upgrade vagrant.  
 Alternatively, you can install an older version of vagrant-dns like this: `vagrant plugin install --plugin-version="<2" vagrant-dns` 
 
