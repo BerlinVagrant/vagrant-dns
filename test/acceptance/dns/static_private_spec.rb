@@ -6,7 +6,7 @@ shared_examples 'provider/dns_static_private' do |provider, options|
   end
 
   include_context 'acceptance'
-  let(:tmp_path) { environment.instance_variable_get(:@homedir) }
+  let(:tmp_path) { environment.homedir }
 
   let(:box_ip) { '10.10.10.101' }
   let(:tld)    { 'spec' }

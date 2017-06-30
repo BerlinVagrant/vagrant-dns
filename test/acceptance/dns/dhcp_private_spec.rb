@@ -6,7 +6,7 @@ shared_examples 'provider/dns_dhcp_private' do |provider, options|
   end
 
   include_context 'acceptance'
-  let(:tmp_path) { environment.instance_variable_get(:@homedir) }
+  let(:tmp_path) { environment.homedir }
 
   let(:tld)    { 'spec' }
   let(:name)   { 'dhcp-private.testbox.spec' }

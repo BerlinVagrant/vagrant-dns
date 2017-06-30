@@ -19,8 +19,7 @@ group :test, :development do
 end
 
 group :test do
-  # Pinned on 05/05/2014. Compatible with Vagrant 1.5.x and 1.6.x.
-  gem 'vagrant-spec', :github => 'mitchellh/vagrant-spec', :ref => 'aae28ee'
+  gem 'vagrant-spec', :git => 'https://github.com/mitchellh/vagrant-spec'
   gem 'rake'
 end
 
