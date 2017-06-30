@@ -5,6 +5,11 @@ Vagrant.configure("2") do |config|
   config.vm.box = "box"
   config.vm.network :private_network, type: :dhcp
 
+  # vagrant-specs will fail otherwise
+  config.vm.provider "virtualbox" do |v|
+    v.gui = true
+  end
+
   # we don't need synced_folder, also they might lead to failures due
   # to guest additions mismatches
   config.vm.synced_folder ".", "/vagrant", disabled: true
