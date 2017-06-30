@@ -15,8 +15,10 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = Vagrant::Dns::VERSION
 
+  gem.required_ruby_version = '>= 2.2.6'
+
   gem.add_dependency "daemons"
-  gem.add_dependency "rubydns", '~> 2.0.0.pre.rc1'
+  gem.add_dependency "rubydns", '~> 2.0.0.pre.rc2'
 
   gem.add_development_dependency 'rspec', '~> 2.14.0' # pin for vagrant-spec
 end
