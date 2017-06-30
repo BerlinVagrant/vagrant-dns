@@ -1,3 +1,9 @@
+# 2.2.0.rc1
+
+* Upgrades RubyDNS to `2.0.0.pre.rc2`, which removes it's dependency on `celluloid`/`celluloid-dns` 🎉
+* Requires Vagrant >= 1.9.6 which ships with ruby 2.3.4 (RubyDNS requires ruby >= 2.2.6)
+* Development note: Upgraded to vagrant-share HEAD (d558861f)
+
 # 1.1.0
 
 * Fixes handling of networks without static IP, such as DHCP. [GH-37], [GH-39], [GH-50]
