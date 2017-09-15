@@ -11,15 +11,15 @@ end
 
 group :test, :development do
   if ENV['TEST_VAGRANT_VERSION'] == 'HEAD'
-    gem 'vagrant', :git => 'https://github.com/mitchellh/vagrant', :branch => 'master'
+    gem 'vagrant', :git => 'https://github.com/hashicorp/vagrant', :branch => 'master'
   else
-    gem 'vagrant', :git => 'https://github.com/mitchellh/vagrant', :tag => ENV['TEST_VAGRANT_VERSION']
+    gem 'vagrant', :git => 'https://github.com/hashicorp/vagrant', :tag => ENV['TEST_VAGRANT_VERSION']
   end
-  gem 'rubydns', '~> 2.0.0.pre.rc2'
+  gem 'rubydns', '~> 2.0.0'
 end
 
 group :test do
-  gem 'vagrant-spec', :git => 'https://github.com/mitchellh/vagrant-spec'
+  gem 'vagrant-spec', :git => 'https://github.com/hashicorp/vagrant-spec'
   gem 'rake'
 end
 

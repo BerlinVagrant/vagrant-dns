@@ -18,7 +18,7 @@ Gem::Specification.new do |gem|
   gem.required_ruby_version = '>= 2.2.6'
 
   gem.add_dependency "daemons"
-  gem.add_dependency "rubydns", '~> 2.0.0.pre.rc2'
+  gem.add_dependency "rubydns", '~> 2.0.0'
 
-  gem.add_development_dependency 'rspec', '~> 2.14.0' # pin for vagrant-spec
+  gem.add_development_dependency 'rspec'
 end
