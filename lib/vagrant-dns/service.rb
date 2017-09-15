@@ -30,7 +30,7 @@ module VagrantDNS
         registry = YAML.load(File.read(config_file))
         std_resolver = RubyDNS::Resolver.new(Async::DNS::System.nameservers)
 
-        RubyDNS::run_server(:listen => VagrantDNS::Config.listen) do
+        RubyDNS::run_server(VagrantDNS::Config.listen) do
           registry.each do |pattern, ip|
             match(Regexp.new(pattern), Resolv::DNS::Resource::IN::A) do |transaction, match_data|
               transaction.respond!(ip)
