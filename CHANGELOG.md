@@ -1,4 +1,8 @@
-# 2.2.0.rc1
+# 2.0.0
+
+* Upgrades RubyDNS to `2.0` release
+
+# 2.0.0.rc1
 
 * Upgrades RubyDNS to `2.0.0.pre.rc2`, which removes it's dependency on `celluloid`/`celluloid-dns` 🎉
 * Requires Vagrant >= 1.9.6 which ships with ruby 2.3.4 (RubyDNS requires ruby >= 2.2.6)
