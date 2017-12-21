@@ -105,3 +105,4 @@ The DNS server will start automatically once the first VM is started.
 * OS X only (please read: [Platform
   Support](https://github.com/BerlinVagrant/vagrant-dns/blob/master/PLATFORM_SUPPORT.md) before ranting about this).
 * Not visible inside the box
+** except with [Vagrant Provider VirtualBox](https://www.vagrantup.com/docs/virtualbox/common-issues.html#dns-not-working): there´s an option to propagate the host´s DNS resolver to the VirtualBox guest machines with `vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]`, see https://serverfault.com/a/453260/326340 and https://serverfault.com/a/506206/326340
