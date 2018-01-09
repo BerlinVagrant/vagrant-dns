@@ -98,7 +98,7 @@ The DNS server will start automatically once the first VM is started.
 * `VagrantDNS::Config.listen`: an Array of Arrays describing interfaces to bind to. Defaults to `[[:udp, "127.0.0.1", 5300]]`.
 * `VagrantDNS::Config.auto_run`: (re)start and reconfigure the server every time a machine is started. On by default.
 
-## Using custom domains from inside the VM
+## Using custom domains from inside the VM (VirtualBox only)
 
 If you need to be able to resolve custom domains managed by this plugin from inside your virtual machine, add the following 
 setting to your `Vagrantfile`:
@@ -119,7 +119,7 @@ end
 
 By default, the Virtualbox NAT engine offers the same DNS servers to the guest that are configured on the host. With the above
 setting, however, the NAT engine will act as a DNS proxy 
-(see [Virtualbox docs](https://www.virtualbox.org/manual/ch09.html#nat-adv-dns). That way, queries for your custom domains
+(see [Virtualbox docs](https://www.virtualbox.org/manual/ch09.html#nat-adv-dns)). That way, queries for your custom domains
 from inside the guest will also be handled by the DNS server run by the plugin.
 
 ## Issues
@@ -128,4 +128,4 @@ from inside the guest will also be handled by the DNS server run by the plugin.
 * No IPv6 support
 * OS X only (please read: [Platform
   Support](https://github.com/BerlinVagrant/vagrant-dns/blob/master/PLATFORM_SUPPORT.md) before ranting about this).
-  
+* Not automatically visible inside the box (special configuration of your guest system or provider needed)
