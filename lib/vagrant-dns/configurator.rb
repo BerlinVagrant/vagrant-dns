@@ -39,22 +39,11 @@ module VagrantDNS
          return
         end
 
-        network = opts[:networks].find do |nw|
-          nw.first == :private_network && nw.last[:ip]
-        end
-
-        unless network
-          network = opts[:networks].find do |nw|
-            nw.first == :public_network && nw.last[:ip]
-          end
-        end
-
-        unless network
-          vm.ui.warn '[vagrant-dns] Could not find any static network IP. No patterns will be configured.'
+        ip = vm_ip(opts)
+        unless ip
+          vm.ui.detail '[vagrant-dns] No patterns will be configured.'
           return
         end
-
-        ip = network.last[:ip]
 
         registry = YAML.load(File.read(config_file)) if File.exists?(config_file)
         registry ||= {}
@@ -68,10 +57,12 @@ module VagrantDNS
       end
 
       def dns_options(vm)
-        dns_options = vm.config.dns.to_hash
-        dns_options[:host_name] = vm.config.vm.hostname
-        dns_options[:networks] = vm.config.vm.networks
-        dns_options
+        return @dns_options if @dns_options
+
+        @dns_options = vm.config.dns.to_hash
+        @dns_options[:host_name] = vm.config.vm.hostname
+        @dns_options[:networks] = vm.config.vm.networks
+        @dns_options
       end
 
       def default_patterns(opts)
@@ -80,6 +71,56 @@ module VagrantDNS
         else
           []
         end
+      end
+
+      def vm_ip(opts)
+        user_ip = opts[:ip]
+
+        ip =
+          case user_ip
+          when Proc
+            if vm.communicate.ready?
+              user_ip.call(vm, opts.dup.freeze)
+            else
+              vm.ui.info '[vagrant-dns] Postponing running user provided IP script until box has started.'
+              return
+            end
+          when Symbol
+            _ip = static_vm_ip(user_ip, opts)
+
+            unless _ip
+              vm.ui.warn "[vagrant-dns] Could not find any static network IP in network type `#{user_ip}'."
+              return
+            end
+
+            _ip
+          else
+            _ip = static_vm_ip(:private_network, opts)
+            _ip ||= static_vm_ip(:public_network, opts)
+
+            unless _ip
+              vm.ui.warn '[vagrant-dns] Could not find any static network IP.'
+              return
+            end
+
+            _ip
+          end
+
+        if !ip || ip.empty?
+          vm.ui.warn '[vagrant-dns] Failed to identify IP.'
+          return
+        end
+
+        ip
+      end
+
+      # tries to find an IP in the configured +type+ networks
+      def static_vm_ip(type, opts)
+        network = opts[:networks].find do |nw|
+          nw.first == type && nw.last[:ip]
+        end
+
+        network.last[:ip] if network
       end
 
       def resolver_file(port)

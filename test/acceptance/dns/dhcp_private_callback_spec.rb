@@ -6,8 +6,9 @@ shared_examples 'provider/dns_dhcp_private' do |provider, options|
   end
 
   include_context 'acceptance'
-  let(:tmp_path) { environment.homedir }
+  let(:tmp_path) { environment.instance_variable_get(:@homedir) }
 
+  let(:box_ip) { '172.28.128.' } # that's some default dhcp range here
   let(:tld)    { 'spec' }
   let(:name)   { 'dhcp-private.testbox.spec' }
 
@@ -19,7 +20,7 @@ shared_examples 'provider/dns_dhcp_private' do |provider, options|
   describe 'installation' do
     it 'creates and removes resolver link with logged warning that no IP could be found' do
       result = assert_execute('vagrant', 'dns', '--install', '--with-sudo')
-      expect(result.stdout).to include("[vagrant-dns] Could not find any static network IP.")
+      expect(result.stdout).to include("[vagrant-dns] Postponing running user provided IP script until box has started.")
       expect(result.stdout).to include("[vagrant-dns] No patterns will be configured.")
 
       assert_execute('sudo', 'test', '-f', "/etc/resolver/#{tld}")
@@ -68,6 +69,17 @@ shared_examples 'provider/dns_dhcp_private' do |provider, options|
     it 'does not respond to host-names' do
       result = assert_execute('dscacheutil', '-q', 'host', '-a', 'name', "#{name}")
       expect(result.stdout).to be_empty
+    end
+
+    it 'responds to host-names' do
+      result = assert_execute('dscacheutil', '-q', 'host', '-a', 'name', "#{name}")
+      expect(result.stdout).to include("ip_address: #{box_ip}")
+
+      result = assert_execute('dscacheutil', '-q', 'host', '-a', 'name', "www.#{name}")
+      expect(result.stdout).to include("ip_address: #{box_ip}")
+
+      result = execute('dscacheutil', '-q', 'host', '-a', 'name', "notthere.#{tld}")
+      expect(result.stdout).to_not include("ip_address: #{box_ip}")
     end
   end
 end

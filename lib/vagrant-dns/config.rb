@@ -19,7 +19,7 @@ module VagrantDNS
       end
     end
 
-    attr_accessor :records, :tlds, :ipv4only, :patterns
+    attr_accessor :records, :tlds, :ipv4only, :patterns, :ip
 
     def pattern=(pattern)
       self.patterns = pattern
@@ -39,7 +39,8 @@ module VagrantDNS
         :patterns => (patterns ? Array(patterns) : patterns),
         :records => records,
         :tlds => tlds,
-        :ipv4only => ipv4only
+        :ipv4only => ipv4only,
+        :ip => ip
       }
     end
   end
