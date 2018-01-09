@@ -22,6 +22,11 @@ module VagrantDNS
       run!(run_options)
     end
 
+    def status!
+      run_options = {:ARGV => ["status"]}.merge(runopts)
+      run!(run_options)
+    end
+
     def run!(run_options)
       Daemons.run_proc("vagrant-dns", run_options) do
         require 'rubydns'
