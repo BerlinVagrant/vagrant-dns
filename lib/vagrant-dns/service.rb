@@ -57,6 +57,17 @@ module VagrantDNS
       start!(start_opts)
     end
 
+    def show_config
+      registry = YAML.load(File.read(config_file)) if File.exists?(config_file)
+      if registry && registry.any?
+        registry.each do |pattern, ip|
+          puts format("%s => %s", Regexp.new(pattern).inspect, ip)
+        end
+      else
+        puts "Configuration missing or empty."
+      end
+    end
+
     def runopts
       daemon_dir = File.join(tmp_path, "daemon")
       {
