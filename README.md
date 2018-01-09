@@ -104,10 +104,16 @@ If you need to be able to resolve custom domains managed by this plugin from ins
 setting to your `Vagrantfile`:
 
 ```ruby
-Vagrant::Config.run do |config|
+Vagrant.configure(2) do |config|
   # ...
-
-  config.vm.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+  config.vm.provider "virtualbox" do |vm_config, override|
+    vm_config.customize [
+      "modifyvm", :id,
+      "--natdnshostresolver1", "on",
+      # some systems also need this:
+      # "--natdnshostresolver2", "on"
+    ]
+  end
 end
 ```
 
