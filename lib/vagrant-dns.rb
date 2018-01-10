@@ -3,8 +3,10 @@ require "vagrant-dns/config"
 
 require "vagrant-dns/service"
 require "vagrant-dns/installers/mac"
-require "vagrant-dns/restart_middleware"
 require "vagrant-dns/configurator"
+require "vagrant-dns/middlewares/config_up"
+require "vagrant-dns/middlewares/config_down"
+require "vagrant-dns/middlewares/restart"
 
 module VagrantDNS
 
@@ -23,10 +25,15 @@ module VagrantDNS
 
     %w{up reload}.each do |action|
       action_hook(:restart_host_dns, "machine_action_#{action}".to_sym) do |hook|
-        hook.append VagrantDNS::RestartMiddleware
+        hook.append VagrantDNS::Middlewares::ConfigUp
+        hook.append VagrantDNS::Middlewares::Restart
       end
     end
 
+    action_hook(:remove_dns_config, :machine_action_destroy) do |hook|
+      hook.append VagrantDNS::Middlewares::ConfigDown
+      hook.append VagrantDNS::Middlewares::Restart
+    end
   end
 
 end

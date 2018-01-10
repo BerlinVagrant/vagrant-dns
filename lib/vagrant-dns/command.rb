@@ -118,7 +118,7 @@ module VagrantDNS
     end
 
     def build_config(vms, options)
-      with_target_vms(vms) { |vm| VagrantDNS::Configurator.new(vm, tmp_path).run! }
+      with_target_vms(vms) { |vm| VagrantDNS::Configurator.new(vm, tmp_path).up! }
     end
 
     def tmp_path
