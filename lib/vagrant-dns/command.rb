@@ -11,7 +11,7 @@ module VagrantDNS
     def execute
       options = {}
       opts = OptionParser.new do |opts|
-        opts.banner = "Usage: vagrant dns [vm-name] [-i|--install] [-u|--uninstall] [--with-sudo] [--pruge] [-s|--start] [-S|--stop] [-r|--restart] [--status] [--show-config] [-o|--ontop]"
+        opts.banner = "Usage: vagrant dns [vm-name] [-i|--install] [-u|--uninstall] [--with-sudo] [--pruge] [-s|--start] [-S|--stop] [-r|--restart] [--status] [-l|--list] [-o|--ontop]"
         opts.separator ""
 
         opts.on("--install", "-i", "Install DNS config for machine domain") do
@@ -54,7 +54,7 @@ module VagrantDNS
           options[:build_config] = false
         end
 
-        opts.on("--show-config", "Show the current DNS service config. This works in conjunction with --start --stop --restart --status.") do
+        opts.on("--list", "-l", "Show the current DNS service config. This works in conjunction with --start --stop --restart --status.") do
           options[:show_config] = true
           options[:build_config] = false
         end

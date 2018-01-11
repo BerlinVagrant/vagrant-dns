@@ -96,7 +96,7 @@ shared_examples 'provider/dns_static_private' do |provider, options|
     end
 
     it "removes the host name config on destroy" do
-      result = assert_execute('vagrant', 'dns', '--show-config')
+      result = assert_execute('vagrant', 'dns', '--list')
       expect(result.stdout).to include(%Q|/^.*#{name}$/ => #{box_ip}|)
 
       result = assert_execute('dscacheutil', '-q', 'host', '-a', 'name', "#{name}")
@@ -106,7 +106,7 @@ shared_examples 'provider/dns_static_private' do |provider, options|
       # still trigger the "machine_action_destroy" event
       execute('vagrant', 'destroy', '--force')
 
-      result = assert_execute('vagrant', 'dns', '--show-config')
+      result = assert_execute('vagrant', 'dns', '--list')
       expect(result.stdout).to_not include(name)
       expect(result.stdout).to_not include(box_ip)
       expect(result.stdout).to include("Configuration missing or empty.")
