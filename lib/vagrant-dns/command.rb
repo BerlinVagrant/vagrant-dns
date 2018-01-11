@@ -34,7 +34,7 @@ module VagrantDNS
           options[:start] = true
         end
 
-        opts.on("--stop", "-s", "Stop the DNS service") do
+        opts.on("--stop", "-S", "Stop the DNS service") do
           options[:stop] = true
         end
 
