@@ -87,6 +87,22 @@ $ vagrant dns --stop
 
 The DNS server will start automatically once the first VM is started.
 
+You can list the currently configured dns patterns using:
+
+```bash
+$ vagrant dns --list
+```
+
+(Keep in mind, that it's not guaranteed that the running server uses exactly this configuration - for example, when manually editing it.)  
+The output looks somewhat like this:
+
+```
+/^.*mysite.dev$/ => 33.33.33.60
+/^.*myothersite.dev$/ => 33.33.33.60
+```
+
+Where the first part of each line is a [regular expression](https://ruby-doc.org/core-2.3.0/Regexp.html) and the second part is the mapped IPv4. (` => ` is just a separator)
+
 ## VM options
 
 * `vm.dns.tld`: Set the tld for the given virtual machine. No default.
