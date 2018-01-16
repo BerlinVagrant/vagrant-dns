@@ -13,7 +13,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.name          = "vagrant-dns"
   gem.require_paths = ["lib"]
-  gem.version       = Vagrant::Dns::VERSION
+  gem.version       = VagrantDNS::VERSION
 
   gem.required_ruby_version = '>= 2.2.6'
 
