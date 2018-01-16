@@ -1,3 +1,24 @@
+## 2.1.0
+
+### Breaking, internal changes:
+
+* The version moved from `Vagrant::DNS::VERSION` to `VagrantDNS::VERSION`, removing an accidental highjack of the `Vagrant` namespace.
+* The `VagrantDNS::RestartMiddleware` got split up into `VagrantDNS::Middlewares::ConfigUp`, `VagrantDNS::Middlewares::ConfigDown` and `VagrantDNS::Middlewares::Restart`
+
+### Fixes:
+
+* Fixes cli short argument `-S` for `--stop` (collided with `--start`'s `-s`)
+
+### New Feautres:
+
+* Adds new cli command `--status` to display process running status and PID
+* Adds new cli command `--list` to display current (persisted) config
+* Adds auto-cleanup: Removes registered dns pattern from config when destroying the box. It will, however, be re-created when some box in the project get's re/started or one of vagrant dns `--instal`, `--start` or `--restart` is executed.
+
+### Changes:
+
+* The cli command `--stop` no longer re-builds configuration.
+
 ## 2.0.0
 
 * Upgrades RubyDNS to `2.0` release
