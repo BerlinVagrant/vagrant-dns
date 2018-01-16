@@ -10,10 +10,14 @@ module VagrantDNS
       @tmp_path = tmp_path
     end
 
-    def run!
+    def up!
       regenerate_resolvers!
       ensure_deamon_env!
       register_patterns!
+    end
+
+    def down!
+      unregister_patterns!
     end
 
     private
@@ -62,6 +66,33 @@ module VagrantDNS
         patterns.each do |p|
           p = p.source if p.respond_to? :source # Regexp#to_s is unusable
           registry[p] = ip
+        end
+
+        File.open(config_file, "w") { |f| f << YAML.dump(registry) }
+      end
+
+      def unregister_patterns!
+        opts     = dns_options(vm)
+
+        patterns = opts[:patterns] || default_patterns(opts)
+        if patterns.empty?
+          vm.ui.warn '[vagrant-dns] TLD but no host_name given. No patterns will be removed.'
+          return
+        end
+
+        registry = YAML.load(File.read(config_file)) if File.exists?(config_file)
+        unless registry
+          vm.ui.warn '[vagrant-dns] Configuration file does not exists. No patterns will be removed.'
+          return
+        end
+
+        patterns.each do |p|
+          p = p.source if p.respond_to? :source # Regexp#to_s is unusable
+          if (ip = registry.delete(p))
+            vm.ui.info "[vagrant-dns] Removing pattern: #{p} for ip: #{ip}"
+          else
+            vm.ui.info "[vagrant-dns] Pattern: #{p} was not in config."
+          end
         end
 
         File.open(config_file, "w") { |f| f << YAML.dump(registry) }

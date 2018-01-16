@@ -22,6 +22,11 @@ module VagrantDNS
       run!(run_options)
     end
 
+    def status!
+      run_options = {:ARGV => ["status"]}.merge(runopts)
+      run!(run_options)
+    end
+
     def run!(run_options)
       Daemons.run_proc("vagrant-dns", run_options) do
         require 'rubydns'
@@ -50,6 +55,17 @@ module VagrantDNS
     def restart!(start_opts = {})
       stop!
       start!(start_opts)
+    end
+
+    def show_config
+      registry = YAML.load(File.read(config_file)) if File.exists?(config_file)
+      if registry && registry.any?
+        registry.each do |pattern, ip|
+          puts format("%s => %s", Regexp.new(pattern).inspect, ip)
+        end
+      else
+        puts "Configuration missing or empty."
+      end
     end
 
     def runopts

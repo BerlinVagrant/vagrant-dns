@@ -11,35 +11,56 @@ module VagrantDNS
     def execute
       options = {}
       opts = OptionParser.new do |opts|
-        opts.banner = "Usage: vagrant dns [vm-name] [-i|--install] [-u|--uninstall] [--with-sudo] [--pruge] [-s|--start] [-S|--stop] [-r|--restart] [-o|--ontop]"
+        opts.banner = "Usage: vagrant dns [vm-name] [-i|--install] [-u|--uninstall] [--with-sudo] [--pruge] [-s|--start] [-S|--stop] [-r|--restart] [--status] [-l|--list] [-o|--ontop]"
         opts.separator ""
 
         opts.on("--install", "-i", "Install DNS config for machine domain") do
           options[:install] = true
+          options[:build_config] = true
+          options[:manage_installation] = true
         end
 
         opts.on("--uninstall", "-u", "Uninstall DNS config for machine domain") do
           options[:uninstall] = true
-        end
-
-        opts.on("--with-sudo", "In conjunction with `--install`, `--uninstall`, `--purge`: Run using `sudo` instead of `osascript`. Useful for automated scripts running as sudoer.") do
-          options[:installer_opts] = { exec_style: :sudo }
+          options[:build_config] = false
+          options[:manage_installation] = true
+          options[:stop] = true
         end
 
         opts.on("--purge", "Uninstall DNS config and remove DNS configurations of all machines.") do
           options[:purge] = true
+          options[:build_config] = false
+          options[:manage_installation] = true
+          options[:stop] = true
         end
 
         opts.on("--start", "-s", "Start the DNS service") do
           options[:start] = true
+          options[:build_config] = true
         end
 
         opts.on("--stop", "-S", "Stop the DNS service") do
           options[:stop] = true
+          options[:build_config] = false
         end
 
         opts.on("--restart", "-r", "Restart the DNS service") do
           options[:restart] = true
+          options[:build_config] = true
+        end
+
+        opts.on("--status", "Show DNS service running status and PID.") do
+          options[:status] = true
+          options[:build_config] = false
+        end
+
+        opts.on("--list", "-l", "Show the current DNS service config. This works in conjunction with --start --stop --restart --status.") do
+          options[:show_config] = true
+          options[:build_config] = false
+        end
+
+        opts.on("--with-sudo", "In conjunction with `--install`, `--uninstall`, `--purge`: Run using `sudo` instead of `osascript`. Useful for automated scripts running as sudoer.") do
+          options[:installer_opts] = { exec_style: :sudo }
         end
 
         opts.on("--ontop", "-o", "Start the DNS service on top. Debugging only, this blocks Vagrant!") do
@@ -52,15 +73,10 @@ module VagrantDNS
 
       vms = argv unless argv.empty?
 
-      if options[:uninstall] || options[:purge]
-        manage_service(vms, options.merge(stop: true))
-        manage_installation(vms, options)
-      else
-        build_config(vms, options)
-        manage_service(vms, options)
-        manage_installation(vms, options) if options[:install]
-      end
-
+      build_config(vms, options)        if options[:build_config]
+      manage_service(vms, options)
+      manage_installation(vms, options) if options[:manage_installation]
+      show_config(vms, options)         if options[:show_config]
     end
 
     protected
@@ -91,11 +107,18 @@ module VagrantDNS
         service.stop!
       elsif options[:restart]
         service.restart! :ontop => options[:ontop]
+      elsif options[:status]
+        service.status!
       end
     end
 
+    def show_config(vms, options)
+      service = VagrantDNS::Service.new(tmp_path)
+      service.show_config
+    end
+
     def build_config(vms, options)
-      with_target_vms(vms) { |vm| VagrantDNS::Configurator.new(vm, tmp_path).run! }
+      with_target_vms(vms) { |vm| VagrantDNS::Configurator.new(vm, tmp_path).up! }
     end
 
     def tmp_path

@@ -42,7 +42,9 @@ shared_examples 'provider/dns_static_private' do |provider, options|
     before do
       assert_execute('vagrant', 'box', 'add', 'box', options[:box])
       assert_execute('vagrant', 'dns', '--install', '--with-sudo')
-      assert_execute('vagrant', 'up', "--provider=#{provider}")
+      # skipping "up" here speeds up our specs
+      # assert_execute('vagrant', 'up', "--provider=#{provider}")
+      assert_execute('vagrant', 'dns', '--start')
     end
 
     after do
@@ -81,4 +83,33 @@ shared_examples 'provider/dns_static_private' do |provider, options|
     end
   end
 
+
+  describe 'un-configure' do
+    before do
+      assert_execute('vagrant', 'box', 'add', 'box', options[:box])
+      assert_execute('vagrant', 'dns', '--install', '--with-sudo')
+      assert_execute('vagrant', 'dns', '--start')
+    end
+
+    after do
+      assert_execute('vagrant', 'dns', '--uninstall', '--with-sudo')
+    end
+
+    it "removes the host name config on destroy" do
+      result = assert_execute('vagrant', 'dns', '--list')
+      expect(result.stdout).to include(%Q|/^.*#{name}$/ => #{box_ip}|)
+
+      result = assert_execute('dscacheutil', '-q', 'host', '-a', 'name', "#{name}")
+      expect(result.stdout).to include("ip_address: #{box_ip}")
+
+      # don't assert, since it was not created in the first place, but will
+      # still trigger the "machine_action_destroy" event
+      execute('vagrant', 'destroy', '--force')
+
+      result = assert_execute('vagrant', 'dns', '--list')
+      expect(result.stdout).to_not include(name)
+      expect(result.stdout).to_not include(box_ip)
+      expect(result.stdout).to include("Configuration missing or empty.")
+    end
+  end
 end
