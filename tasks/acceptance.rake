@@ -1,3 +1,5 @@
+require "tmpdir"
+
 namespace :acceptance do
   def tmp_dir_path
     @tmp_dir_path ||= ENV["VS_TEMP"] || Dir.mktmpdir('vagrant-dns-spec')
@@ -21,7 +23,7 @@ namespace :acceptance do
     desc "Run acceptance tests for #{provider}"
     task provider => :"setup:#{provider}" do |task|
       box_path = File.expand_path(File.join('..', '..', ARTIFACT_DIR, "#{provider}.box"), __FILE__)
-      puts "TMPDIR: " + tmp_dir_path
+      puts "TMPDIR: #{tmp_dir_path}"
       Kernel.system(
         {
           "VS_PROVIDER" => provider.to_s,
