@@ -1,6 +1,5 @@
 require 'daemons'
 
-
 module VagrantDNS
   class Service
     attr_accessor :tmp_path
@@ -32,12 +31,12 @@ module VagrantDNS
         require 'rubydns'
         require 'async/dns/system'
 
-        registry = YAML.load(File.read(config_file))
+        registry = Registry.new(tmp_path).to_hash
         std_resolver = RubyDNS::Resolver.new(Async::DNS::System.nameservers)
 
         RubyDNS::run_server(VagrantDNS::Config.listen) do
           registry.each do |pattern, ip|
-            match(Regexp.new(pattern), Resolv::DNS::Resource::IN::A) do |transaction, match_data|
+            match(pattern, Resolv::DNS::Resource::IN::A) do |transaction, match_data|
               transaction.respond!(ip)
             end
           end
@@ -58,10 +57,11 @@ module VagrantDNS
     end
 
     def show_config
-      registry = YAML.load(File.read(config_file)) if File.exists?(config_file)
-      if registry && registry.any?
+      registry = Registry.new(tmp_path).to_hash
+
+      if registry.any?
         registry.each do |pattern, ip|
-          puts format("%s => %s", Regexp.new(pattern).inspect, ip)
+          puts format("%s => %s", pattern.inspect, ip)
         end
       else
         puts "Configuration missing or empty."
@@ -76,10 +76,6 @@ module VagrantDNS
         :log_output => true,
         :log_dir    => daemon_dir
      }
-    end
-
-    def config_file
-      File.join(tmp_path, "config")
     end
   end
 end
