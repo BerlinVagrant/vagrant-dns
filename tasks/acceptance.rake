@@ -13,11 +13,11 @@ namespace :acceptance do
 
   TEST_BOXES.each do |provider, box_url|
     # Declare file download tasks
-    directory ARTIFACT_DIR do
-      file File.join(ARTIFACT_DIR, "#{provider}.box") => ARTIFACT_DIR do |path|
-        puts 'Downloading: ' + box_url
-        Kernel.system 'curl', '-L', '-o', path.to_s, box_url
-      end
+    directory ARTIFACT_DIR
+
+    file File.join(ARTIFACT_DIR, "#{provider}.box") => ARTIFACT_DIR do |path|
+      puts 'Downloading: ' + box_url
+      Kernel.system 'curl', '-L', '-o', path.to_s, box_url
     end
 
     desc "Run acceptance tests for #{provider}"
