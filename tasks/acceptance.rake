@@ -8,7 +8,10 @@ namespace :acceptance do
   ARTIFACT_DIR = File.join('test', 'acceptance', 'artifacts')
 
   TEST_BOXES = {
-    :virtualbox => 'http://files.vagrantup.com/precise32.box'
+    # Ubuntu 16.04 https://app.vagrantup.com/ubuntu/boxes/xenial64.json
+    # :virtualbox => "https://vagrantcloud.com/ubuntu/boxes/xenial64/versions/20180511.0.0/providers/virtualbox.box"
+    # Ubuntu 18.04 https://app.vagrantup.com/ubuntu/boxes/bionic64.json
+    :virtualbox => "https://vagrantcloud.com/ubuntu/boxes/bionic64/versions/20180709.0.0/providers/virtualbox.box"
   }
 
   TEST_BOXES.each do |provider, box_url|
