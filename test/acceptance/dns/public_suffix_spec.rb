@@ -41,7 +41,7 @@ shared_examples 'provider/tld_public_suffix' do |provider, options|
   describe "config level 'error'" do
     let(:check_public_suffix_line) do
       <<-RUBY
-      VagrantDNS::Config.check_public_suffix = { level: "error" }
+      VagrantDNS::Config.check_public_suffix = "error"
       RUBY
     end
 

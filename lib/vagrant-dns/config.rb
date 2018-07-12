@@ -15,7 +15,7 @@ module VagrantDNS
       end
 
       def check_public_suffix
-        return { level: "warn", allow_private_domains: false } if @check_public_suffix.nil?
+        return "warn" if @check_public_suffix.nil?
         @check_public_suffix
       end
 
@@ -24,9 +24,10 @@ module VagrantDNS
 
         require "public_suffix"
 
+        # Don't include private domains in the list, we are only interested in TLDs and such
         list = PublicSuffix::List.parse(
           File.read(PublicSuffix::List::DEFAULT_LIST_PATH),
-          private_domains: !check_public_suffix[:allow_private_domains]
+          private_domains: false
         )
 
         failed_tlds = vm.config.dns.tlds.select { |tld| list.find(tld, default: false) }
@@ -35,7 +36,7 @@ module VagrantDNS
           "tlds include a public suffix: #{failed_tlds.join(', ')}"
         end
 
-        if err && check_public_suffix[:level] == "error"
+        if err && check_public_suffix.to_s == "error"
           [false, err]
         elsif err
           [true, err]
