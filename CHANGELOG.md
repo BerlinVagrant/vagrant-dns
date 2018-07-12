@@ -1,3 +1,21 @@
+## 2.2.0 (unreleased)
+
+### Fixes:
+
+* Fixes acceptance tests for macOS High Sierra (10.13) to cope with `scutil`s new output format
+* Adds the log-time missing `license` gem config
+
+### Changes:
+
+* Removes the global and vm config  `ipv4only`. It was nver been used.
+* Internal changes on how the dns pattern config is read and written. (Now using `YAML::Store`)
+* Acceptance tests run against vagrant v2.1.2
+* Acceptance tests run against Ubuntu 18.04
+
+### New Feautres:
+
+* Adds a check for the VMs configured TLDs to not be included in the [Public Suffix List](https://publicsuffix.org/)
+
 ## 2.1.0
 
 ### Breaking, internal changes:
