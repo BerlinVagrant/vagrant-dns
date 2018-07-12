@@ -81,6 +81,12 @@ shared_examples 'provider/dns_static_public' do |provider, options|
       result = execute('dscacheutil', '-q', 'host', '-a', 'name', "notthere.#{tld}")
       expect(result.stdout).to_not include("ip_address: #{box_ip}")
     end
+
+    it 'vagrant box starts up and is usable' do
+      assert_execute('vagrant', 'up', "--provider=#{provider}")
+      result = assert_execute('vagrant', 'ssh', '-c', 'whoami')
+      expect(result.stdout).to include("vagrant")
+    end
   end
 
   describe 'un-configure' do

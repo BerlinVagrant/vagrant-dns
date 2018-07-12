@@ -68,5 +68,10 @@ shared_examples 'provider/dns_dhcp_private' do |provider, options|
       result = assert_execute('dscacheutil', '-q', 'host', '-a', 'name', "#{name}")
       expect(result.stdout).to be_empty
     end
+
+    it 'vagrant box starts up and is usable' do
+      result = assert_execute('vagrant', 'ssh', '-c', 'whoami')
+      expect(result.stdout).to include("vagrant")
+    end
   end
 end
