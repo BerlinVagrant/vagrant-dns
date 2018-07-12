@@ -7,6 +7,7 @@ Gem::Specification.new do |gem|
   gem.description   = %q{vagrant-dns is a vagrant plugin that manages DNS records associated with local machines.}
   gem.summary       = %q{vagrant-dns manages DNS records of vagrant machines}
   gem.homepage      = ""
+  gem.license       = "MIT"
 
   gem.files         = `git ls-files`.split($\).reject { |f| f.match(%r{^(test|testdrive)/}) }
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
