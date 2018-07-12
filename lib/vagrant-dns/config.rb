@@ -15,11 +15,13 @@ module VagrantDNS
       end
     end
 
-    attr_accessor :records, :tlds, :patterns
+    attr_accessor :records
+    attr_reader :tlds, :patterns
 
     def pattern=(pattern)
-      self.patterns = pattern
+      @patterns = (pattern ? Array(pattern) : pattern)
     end
+    alias_method :patterns=, :pattern=
 
     def tld=(tld)
       @tlds = Array(tld)
@@ -32,7 +34,7 @@ module VagrantDNS
     # explicit hash, to get symbols in hash keys
     def to_hash
       {
-        :patterns => (patterns ? Array(patterns) : patterns),
+        :patterns => patterns,
         :records => records,
         :tlds => tlds,
       }
