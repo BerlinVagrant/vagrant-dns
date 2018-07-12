@@ -14,11 +14,13 @@ Vagrant.configure("2") do |config|
   config.dns.patterns = /^.*machine.test$/
 
   config.vm.hostname = "machine"
-  config.vm.network :private_network, ip: "33.33.33.60"
-  # config.vm.network :private_network, type: :dhcp
+  # config.vm.network :private_network, ip: "33.33.33.60"
+  config.vm.network :private_network, type: :dhcp
   # config.vm.network :public_network, ip: "192.168.178.222", bridge: "en0: Wi-Fi (AirPort)"
   # config.vm.network :public_network, use_dhcp_assigned_default_route: true, bridge: "en0: Wi-Fi (AirPort)"
 
+
+  config.vm.synced_folder ".", "/vagrant", disabled: true
 
   VagrantDNS::Config.listen = [[:udp, "0.0.0.0", 5300]]
 end
