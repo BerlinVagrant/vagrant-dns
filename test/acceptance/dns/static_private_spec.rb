@@ -64,7 +64,7 @@ shared_examples 'provider/dns_static_private' do |provider, options|
         \\s*nameserver\\[0\\]\\s*: 127.0.0.1
         \\s*port\\s*: 5333
         \\s*flags\\s*: Request A records, Request AAAA records
-        \\s*reach\\s*: Reachable,\\s?Local Address(, Directly Reachable Address)?
+        \\s*reach\\s*:(?=.*\\bReachable\\b)(?=.*\\bLocal Address\\b).*
       TXT
 
       result = assert_execute('scutil', '--dns')
@@ -82,7 +82,6 @@ shared_examples 'provider/dns_static_private' do |provider, options|
       expect(result.stdout).to_not include("ip_address: #{box_ip}")
     end
   end
-
 
   describe 'un-configure' do
     before do
