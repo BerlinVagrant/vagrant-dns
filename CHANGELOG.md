@@ -13,7 +13,7 @@
 
 * Adds new cli command `--status` to display process running status and PID
 * Adds new cli command `--list` to display current (persisted) config
-* Adds auto-cleanup: Removes registered dns pattern from config when destroying the box. It will, however, be re-created when some box in the project get's re/started or one of vagrant dns `--instal`, `--start` or `--restart` is executed.
+* Adds auto-cleanup: Removes registered dns pattern from config when destroying the box. It will, however, be re-created when some box in the project gets re/started or one of vagrant dns `--install`, `--start` or `--restart` is executed.
 
 ### Changes:
 

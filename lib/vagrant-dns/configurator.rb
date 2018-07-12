@@ -1,5 +1,4 @@
 require 'fileutils'
-require 'yaml'
 
 module VagrantDNS
   class Configurator
@@ -60,15 +59,12 @@ module VagrantDNS
 
         ip = network.last[:ip]
 
-        registry = YAML.load(File.read(config_file)) if File.exists?(config_file)
-        registry ||= {}
-
-        patterns.each do |p|
-          p = p.source if p.respond_to? :source # Regexp#to_s is unusable
-          registry[p] = ip
+        registry = Registry.new(tmp_path)
+        registry.transaction do
+          patterns.each do |pattern|
+            registry[pattern] = ip
+          end
         end
-
-        File.open(config_file, "w") { |f| f << YAML.dump(registry) }
       end
 
       def unregister_patterns!
@@ -80,22 +76,21 @@ module VagrantDNS
           return
         end
 
-        registry = YAML.load(File.read(config_file)) if File.exists?(config_file)
-        unless registry
-          vm.ui.warn '[vagrant-dns] Configuration file does not exists. No patterns will be removed.'
-          return
-        end
+        registry = Registry.new(tmp_path)
+        registry.transaction do
+          unless registry.any?
+            vm.ui.warn '[vagrant-dns] Configuration missing or empty. No patterns will be removed.'
+            registry.abort
+          end
 
-        patterns.each do |p|
-          p = p.source if p.respond_to? :source # Regexp#to_s is unusable
-          if (ip = registry.delete(p))
-            vm.ui.info "[vagrant-dns] Removing pattern: #{p} for ip: #{ip}"
-          else
-            vm.ui.info "[vagrant-dns] Pattern: #{p} was not in config."
+          patterns.each do |pattern|
+            if (ip = registry.delete(pattern))
+              vm.ui.info "[vagrant-dns] Removing pattern: #{pattern} for ip: #{ip}"
+            else
+              vm.ui.info "[vagrant-dns] Pattern: #{pattern} was not in config."
+            end
           end
         end
-
-        File.open(config_file, "w") { |f| f << YAML.dump(registry) }
       end
 
       def dns_options(vm)
@@ -127,10 +122,6 @@ FILE
 
       def ensure_deamon_env!
         FileUtils.mkdir_p(File.join(tmp_path, "daemon"))
-      end
-
-      def config_file
-        File.join(tmp_path, "config")
       end
   end
 end

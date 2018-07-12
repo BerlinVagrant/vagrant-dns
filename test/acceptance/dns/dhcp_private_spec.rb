@@ -57,7 +57,7 @@ shared_examples 'provider/dns_dhcp_private' do |provider, options|
         \\s*nameserver\\[0\\]\\s*: 127.0.0.1
         \\s*port\\s*: 5333
         \\s*flags\\s*: Request A records, Request AAAA records
-        \\s*reach\\s*: Reachable,\\s?Local Address(, Directly Reachable Address)?
+        \\s*reach\\s*:(?=.*\\bReachable\\b)(?=.*\\bLocal Address\\b).*
       TXT
 
       result = assert_execute('scutil', '--dns')
@@ -67,6 +67,11 @@ shared_examples 'provider/dns_dhcp_private' do |provider, options|
     it 'does not respond to host-names' do
       result = assert_execute('dscacheutil', '-q', 'host', '-a', 'name', "#{name}")
       expect(result.stdout).to be_empty
+    end
+
+    it 'vagrant box starts up and is usable' do
+      result = assert_execute('vagrant', 'ssh', '-c', 'whoami')
+      expect(result.stdout).to include("vagrant")
     end
   end
 end

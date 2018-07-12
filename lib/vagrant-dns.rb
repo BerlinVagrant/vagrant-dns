@@ -1,6 +1,7 @@
 require "vagrant-dns/version"
 require "vagrant-dns/config"
 
+require "vagrant-dns/registry"
 require "vagrant-dns/service"
 require "vagrant-dns/installers/mac"
 require "vagrant-dns/configurator"
