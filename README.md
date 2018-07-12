@@ -113,7 +113,11 @@ Where the first part of each line is a [regular expression](https://ruby-doc.org
 
 * `VagrantDNS::Config.listen`: an Array of Arrays describing interfaces to bind to. Defaults to `[[:udp, "127.0.0.1", 5300]]`.
 * `VagrantDNS::Config.auto_run`: (re)start and reconfigure the server every time a machine is started. On by default.
-
+* `VagrantDNS::Config.check_public_suffix`: Check if you are going to configure a [Public Suffix](https://publicsuffix.org/) (like a Top Level Domain) in a VMs `tld(s)` config, which could mess up your local dev machines DNS config. Possible configuration values are:
+  - `false`: Disables the feature.
+  - `"warn"`: Check and print a warning. (Still creates a resolver config and potentionally messes up your DNS) **At the moment, this is the default** because lots of projetcs used to use `"dev"` as a TLD, but this got registered by google and is now a public suffix.
+  - `"error"`: Check and prevent the box from starting. (Does not create the resolver config, it will also prevent the box from starting.)
+ 
 ## Using custom domains from inside the VM (VirtualBox only)
 
 If you need to be able to resolve custom domains managed by this plugin from inside your virtual machine, add the following 
