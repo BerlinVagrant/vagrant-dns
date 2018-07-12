@@ -10,6 +10,7 @@ module VagrantDNS
     end
 
     def up!
+      return unless validate_tlds
       regenerate_resolvers!
       ensure_deamon_env!
       register_patterns!
@@ -20,6 +21,16 @@ module VagrantDNS
     end
 
     private
+      def validate_tlds
+        valid, err = VagrantDNS::Config.validate_tlds(vm)
+        if !valid
+          vm.ui.error(err)
+        elsif err
+          vm.ui.warn(err)
+        end
+        valid
+      end
+
       def regenerate_resolvers!
         FileUtils.mkdir_p(resolver_folder)
 
