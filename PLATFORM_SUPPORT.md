@@ -14,7 +14,7 @@ This document aims to be a guide to implementing support for other platforms.
 How Vagrant-DNS currently works
 ===============================
 
-In a nutshell, Vagrant-DNS starts a DNS server on a non-privileged port (5300 by default) and makes sure that the host operating system knows this server. If possible, it only does so for a specific, free, TLD (.dev). As a fallback, it also supports pass-through, if you really want to play with ICANN domains.
+In a nutshell, Vagrant-DNS starts a DNS server on a non-privileged port (5300 by default) and makes sure that the host operating system knows this server. If possible, it only does so for a specific, free, TLD (.test). As a fallback, it also supports pass-through, if you really want to play with ICANN domains.
 
 The DNS server runs on all platforms.
 
