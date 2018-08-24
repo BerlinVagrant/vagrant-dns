@@ -103,6 +103,52 @@ The output looks somewhat like this:
 
 Where the first part of each line is a [regular expression](https://ruby-doc.org/core-2.3.0/Regexp.html) and the second part is the mapped IPv4. (` => ` is just a separator)
 
+## Multi VM config
+
+We can use [multivm](https://www.vagrantup.com/docs/multi-machine/) configuration and have dns names for host.
+
+* Use below given vagrant config
+    ```Vagrant
+    BOX_IMAGE = "ubuntu/xenial64"
+    MASTER_COUNT = 2
+    WORKER_COUNT = 2
+
+    Vagrant.configure("2") do |config|
+      (1..MASTER_COUNT).each do |i|
+        config.vm.define "master#{i}.vagrant.box" do |subconfig|
+          subconfig.dns.tld = "box"
+          subconfig.vm.hostname = "vagrant"
+          subconfig.dns.patterns = "master#{i}.mysite.box"
+          subconfig.vm.box_check_update = false
+          subconfig.vm.box = BOX_IMAGE
+          subconfig.vm.network "private_network", ip: "10.240.0.#{i+10}"
+          subconfig.vm.provider "virtualbox" do |vb|
+              vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on", "--vrde", "off", "--vram", 10]
+            end
+        end
+      end
+
+      (1..WORKER_COUNT).each do |i|
+        config.vm.define "worker#{i}.vagrant.box" do |subconfig|
+          subconfig.dns.tld = "box"
+          subconfig.vm.hostname = "vagrant"
+          subconfig.dns.patterns = "worker#{i}.mysite.box"
+          subconfig.vm.box_check_update = false
+          subconfig.vm.box = BOX_IMAGE
+          subconfig.vm.network "private_network", ip: "10.240.0.#{i+15}"
+          subconfig.vm.provider "virtualbox" do |vb|
+              vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on", "--vrde", "off", "--vram", 10]
+            end
+        end
+      end
+
+    end
+    ```
+*  `vagrant up`
+*  Execute : `vagrant dns --install`
+*  Test via: `ping worker2.mysite.box` or `master1.mysite.box`
+
+
 ## VM options
 
 * `vm.dns.tld`: Set the tld for the given virtual machine. No default.
