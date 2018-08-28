@@ -111,7 +111,7 @@ We can use [multivm](https://www.vagrantup.com/docs/multi-machine/) configuratio
     ```ruby
     BOX_IMAGE = "ubuntu/xenial64"
     WORKER_COUNT = 2
-
+    Vagrant.configure("2") do |config|
       (1..WORKER_COUNT).each do |i|
         config.vm.define "worker#{i}.vagrant.box" do |subconfig|
           subconfig.dns.tld = "box"
