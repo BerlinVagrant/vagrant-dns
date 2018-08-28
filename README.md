@@ -22,7 +22,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.hostname = "machine"
 
-  config.dns.patterns = [/^.*mysite.test$/, /^.*myothersite.test$/]
+  config.dns.patterns = [/^(\w+\.)*mysite\.test$/, /^(\w+\.)*myothersite\.test$/]
 
   config.vm.network :private_network, ip: "33.33.33.60"
 end
