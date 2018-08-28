@@ -18,11 +18,11 @@ In addition to your networking config, configure a toplevel domain and a `hostna
 Vagrant.configure("2") do |config|
   #...
 
-  config.dns.tld = "dev"
+  config.dns.tld = "test"
 
   config.vm.hostname = "machine"
 
-  config.dns.patterns = [/^.*mysite.dev$/, /^.*myothersite.dev$/]
+  config.dns.patterns = [/^.*mysite.test$/, /^.*myothersite.test$/]
 
   config.vm.network :private_network, ip: "33.33.33.60"
 end
@@ -37,7 +37,7 @@ Then, register the DNS server as a resolver:
 $ vagrant dns --install
 ```
 
-On OS X, this will create a file `/etc/resolver/dev`, which tells OS X to resolve the TLD `.dev` by using the nameserver given in this file. You will have to rerun --install every time a tld is added.
+On OS X, this will create a file `/etc/resolver/test`, which tells OS X to resolve the TLD `.test` by using the nameserver given in this file. You will have to rerun --install every time a tld is added.
 
 You can delete this file by running:
 
@@ -45,7 +45,7 @@ You can delete this file by running:
 $ vagrant dns --uninstall
 ```
 
-To also delete the created config file for this TLD (`~/.vagrant.d/tmp/dns/resolver/dev` in our example) run:
+To also delete the created config file for this TLD (`~/.vagrant.d/tmp/dns/resolver/test` in our example) run:
 
 
 ```bash
@@ -64,12 +64,12 @@ And test it:
 $ scutil --dns
 ...
 resolver #8
-  domain   : dev
+  domain   : test
   nameserver[0] : 127.0.0.1
   port     : 5300
 ...
-$ dscacheutil -q host -a name test.machine.dev
-name: test.machine.dev
+$ dscacheutil -q host -a name test.machine.test
+name: test.machine.test
 ip_address: 33.33.33.10
 ```
 
@@ -97,8 +97,8 @@ $ vagrant dns --list
 The output looks somewhat like this:
 
 ```
-/^.*mysite.dev$/ => 33.33.33.60
-/^.*myothersite.dev$/ => 33.33.33.60
+/^.*mysite.test$/ => 33.33.33.60
+/^.*myothersite.test$/ => 33.33.33.60
 ```
 
 Where the first part of each line is a [regular expression](https://ruby-doc.org/core-2.3.0/Regexp.html) and the second part is the mapped IPv4. (` => ` is just a separator)
@@ -113,11 +113,10 @@ We can use [multivm](https://www.vagrantup.com/docs/multi-machine/) configuratio
     WORKER_COUNT = 2
     Vagrant.configure("2") do |config|
       (1..WORKER_COUNT).each do |i|
-        config.vm.define "worker#{i}.vagrant.box" do |subconfig|
-          subconfig.dns.tld = "box"
+        config.vm.define "worker#{i}" do |subconfig|
+          subconfig.dns.tld = "test"
           subconfig.vm.hostname = "vagrant"
-          subconfig.dns.patterns = "worker#{i}.mysite.box"
-          subconfig.vm.box_check_update = false
+          subconfig.dns.patterns = "worker#{i}.mysite.test"
           subconfig.vm.box = BOX_IMAGE
           subconfig.vm.network "private_network", ip: "10.240.0.#{i+15}"
         end
