@@ -9,7 +9,7 @@
 
 * Removes the global and vm config  `ipv4only`. It was nver been used.
 * Internal changes on how the dns pattern config is read and written. (Now using `YAML::Store`)
-* Acceptance tests run against vagrant v2.1.2
+* Acceptance tests run against vagrant v2.1.4
 * Acceptance tests run against Ubuntu 18.04
 
 ### New Feautres:
