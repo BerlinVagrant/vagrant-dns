@@ -137,6 +137,7 @@ We can use [multivm](https://www.vagrantup.com/docs/multi-machine/) configuratio
 ## Global Options
 
 * `VagrantDNS::Config.listen`: an Array of Arrays describing interfaces to bind to. Defaults to `[[:udp, "127.0.0.1", 5300]]`.
+* `VagrantDNS::Config.ttl`: The time-to-live in seconds for all resources. Defaults to `300` (5 minutes).
 * `VagrantDNS::Config.auto_run`: (re)start and reconfigure the server every time a machine is started. On by default.
 * `VagrantDNS::Config.check_public_suffix`: Check if you are going to configure a [Public Suffix](https://publicsuffix.org/) (like a Top Level Domain) in a VMs `tld(s)` config, which could mess up your local dev machines DNS config. Possible configuration values are:
   - `false`: Disables the feature.

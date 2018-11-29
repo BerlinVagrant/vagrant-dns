@@ -33,11 +33,12 @@ module VagrantDNS
 
         registry = Registry.new(tmp_path).to_hash
         std_resolver = RubyDNS::Resolver.new(Async::DNS::System.nameservers)
+        ttl = VagrantDNS::Config.ttl
 
         RubyDNS::run_server(VagrantDNS::Config.listen) do
           registry.each do |pattern, ip|
             match(pattern, Resolv::DNS::Resource::IN::A) do |transaction, match_data|
-              transaction.respond!(ip)
+              transaction.respond!(ip, ttl: ttl)
             end
           end
 

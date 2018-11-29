@@ -1,13 +1,21 @@
 ## 2.2.0 (unreleased)
 
+### New Feautres:
+
+* Add global config for time-to-live via `VagrantDNS::Config.ttl`
+
 ### Fixes:
 
 * Fixes acceptance tests for macOS High Sierra (10.13) to cope with `scutil`s new output format
 * Adds the log-time missing `license` gem config
 
-### Changes:
+### Breaking Changes:
 
 * Removes the global and vm config  `ipv4only`. It was nver been used.
+
+### Changes:
+
+* Resources will now respond with a low TTL (time-to-live) of 5 minutes (300 seconds) instead of the old 24 hours by default. Use `VagrantDNS::Config.ttl = 86400` to reset to the old behaviour.
 * Internal changes on how the dns pattern config is read and written. (Now using `YAML::Store`)
 * Acceptance tests run against vagrant v2.1.4
 * Acceptance tests run against Ubuntu 18.04
