@@ -11,7 +11,7 @@ end
 
 group :test, :development do
   if ENV['TEST_VAGRANT_VERSION'] == 'HEAD'
-    gem 'vagrant', :git => 'https://github.com/hashicorp/vagrant', :branch => 'master'
+    gem 'vagrant', :git => 'https://github.com/hashicorp/vagrant', :branch => 'main'
   else
     gem 'vagrant', :git => 'https://github.com/hashicorp/vagrant', :tag => ENV['TEST_VAGRANT_VERSION']
   end
@@ -19,7 +19,7 @@ group :test, :development do
 end
 
 group :test do
-  gem 'vagrant-spec', :git => 'https://github.com/hashicorp/vagrant-spec'
+  gem 'vagrant-spec', :git => 'https://github.com/hashicorp/vagrant-spec', :branch => 'main'
   gem 'rake'
 end
 
