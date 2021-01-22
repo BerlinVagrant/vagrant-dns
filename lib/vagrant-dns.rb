@@ -11,8 +11,22 @@ require "vagrant-dns/middlewares/restart"
 
 module VagrantDNS
 
-  class Plugin < Vagrant.plugin("2")
+  # @private
+  def self.hooks
+    @hooks ||= []
+  end
 
+  # @private
+  def self.hooked(name)
+    hooks << name
+  end
+
+  # @private
+  def self.hooked?(name)
+    hooks.include?(name)
+  end
+
+  class Plugin < Vagrant.plugin("2")
     name "vagrant-dns"
 
     config "dns" do
@@ -24,16 +38,22 @@ module VagrantDNS
       Command
     end
 
-    %w{up reload}.each do |action|
-      action_hook(:restart_host_dns, "machine_action_#{action}".to_sym) do |hook|
-        hook.append VagrantDNS::Middlewares::ConfigUp
-        hook.append VagrantDNS::Middlewares::Restart
+    %w{machine_action_up machine_action_reload}.each do |action|
+      action_hook("restart_vagarant_dns_on_#{action}", action) do |hook|
+        unless VagrantDNS.hooked?(action)
+          hook.append VagrantDNS::Middlewares::ConfigUp
+          hook.append VagrantDNS::Middlewares::Restart
+          VagrantDNS.hooked(action)
+        end
       end
     end
 
-    action_hook(:remove_dns_config, :machine_action_destroy) do |hook|
-      hook.append VagrantDNS::Middlewares::ConfigDown
-      hook.append VagrantDNS::Middlewares::Restart
+    action_hook("remove_vagrant_dns_config", "machine_action_destroy") do |hook|
+      unless VagrantDNS.hooked?("remove_vagrant_dns_config")
+        hook.append VagrantDNS::Middlewares::ConfigDown
+        hook.append VagrantDNS::Middlewares::Restart
+        VagrantDNS.hooked("remove_vagrant_dns_config")
+      end
     end
   end
 
