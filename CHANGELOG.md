@@ -1,3 +1,9 @@
+## 2.2.1
+
+### Fixes:
+
+* Prevent action hooks (restarting dns server) from running multiple times [GH-67]
+
 ## 2.2.0
 
 ### New Feautres:
