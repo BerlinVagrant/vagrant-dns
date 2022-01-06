@@ -1,3 +1,9 @@
+## 2.2.2
+
+### Fixes:
+
+* Installation issue due to updated sub-dependency. [GH-69]
+
 ## 2.2.1
 
 ### Fixes:
