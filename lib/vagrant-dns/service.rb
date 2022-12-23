@@ -20,29 +20,33 @@ module VagrantDNS
       run!("status")
     end
 
-    def run!(cmd, opts = {})
-      Daemons.run_proc("vagrant-dns", run_options(cmd, opts)) do
-        require 'rubydns'
-        require 'async/dns/system'
+    SERVER = Proc.new do |tmp_path|
+      require 'rubydns'
+      require 'async/dns/system'
 
-        registry = Registry.new(tmp_path).to_hash
-        std_resolver = RubyDNS::Resolver.new(Async::DNS::System.nameservers)
-        ttl = VagrantDNS::Config.ttl
+      registry = Registry.new(tmp_path).to_hash
+      std_resolver = RubyDNS::Resolver.new(Async::DNS::System.nameservers)
+      ttl = VagrantDNS::Config.ttl
 
-        RubyDNS::run_server(VagrantDNS::Config.listen) do
-          registry.each do |pattern, ip|
-            match(pattern, Resolv::DNS::Resource::IN::A) do |transaction, match_data|
-              transaction.respond!(ip, ttl: ttl)
-            end
-          end
-
-          otherwise do |transaction|
-            transaction.passthrough!(std_resolver) do |reply, reply_name|
-              puts reply
-              puts reply_name
-            end
+      RubyDNS::run_server(VagrantDNS::Config.listen) do
+        registry.each do |pattern, ip|
+          match(pattern, Resolv::DNS::Resource::IN::A) do |transaction, match_data|
+            transaction.respond!(ip, ttl: ttl)
           end
         end
+
+        otherwise do |transaction|
+          transaction.passthrough!(std_resolver) do |reply, reply_name|
+            puts reply
+            puts reply_name
+          end
+        end
+      end
+    end
+
+    def run!(cmd, opts = {})
+      Daemons.run_proc("vagrant-dns", run_options(cmd, opts)) do
+        SERVER.call(tmp_path)
       end
     end
 
