@@ -20,9 +20,11 @@ module VagrantDNS
       run!("status")
     end
 
-    SERVER = Proc.new do |tmp_path|
-      require 'rubydns'
-      require 'async/dns/system'
+    SERVER = Proc.new do |tmp_path, skip_require_dependencies|
+      unless skip_require_dependencies
+        require 'rubydns'
+        require 'async/dns/system'
+      end
 
       registry = Registry.new(tmp_path).to_hash
       std_resolver = RubyDNS::Resolver.new(Async::DNS::System.nameservers)
@@ -45,8 +47,17 @@ module VagrantDNS
     end
 
     def run!(cmd, opts = {})
+      # On darwin, when the running Ruby is not compiled for the running OS
+      # @see: https://github.com/BerlinVagrant/vagrant-dns/issues/72
+      use_issue_72_workround = RUBY_PLATFORM.match?(/darwin/) && !RUBY_PLATFORM.end_with?(`uname -r`[0, 2])
+
+      if cmd == "start" && use_issue_72_workround
+        require 'rubydns'
+        require 'async/dns/system'
+      end
+
       Daemons.run_proc("vagrant-dns", run_options(cmd, opts)) do
-        SERVER.call(tmp_path)
+        SERVER.call(tmp_path, use_issue_72_workround)
       end
     end
 
