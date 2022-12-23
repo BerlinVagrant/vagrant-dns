@@ -9,25 +9,19 @@ module VagrantDNS
     end
 
     def start!(opts = {})
-      run_options = {
-        :ARGV => ["start"],
-        :ontop => opts[:ontop]
-      }.merge!(runopts)
-      run!(run_options)
+      run!("start", { ontop: opts[:ontop] })
     end
 
     def stop!
-      run_options = {:ARGV => ["stop"]}.merge(runopts)
-      run!(run_options)
+      run!("stop")
     end
 
     def status!
-      run_options = {:ARGV => ["status"]}.merge(runopts)
-      run!(run_options)
+      run!("status")
     end
 
-    def run!(run_options)
-      Daemons.run_proc("vagrant-dns", run_options) do
+    def run!(cmd, opts = {})
+      Daemons.run_proc("vagrant-dns", run_options(cmd, opts)) do
         require 'rubydns'
         require 'async/dns/system'
 
@@ -69,13 +63,17 @@ module VagrantDNS
       end
     end
 
-    def runopts
+    private
+
+    def run_options(cmd, extra = {})
       daemon_dir = File.join(tmp_path, "daemon")
       {
-        :dir_mode   => :normal,
-        :dir        => daemon_dir,
-        :log_output => true,
-        :log_dir    => daemon_dir
+        ARGV: [cmd],
+        dir_mode: :normal,
+        dir: daemon_dir,
+        log_output: true,
+        log_dir: daemon_dir,
+        **extra
      }
     end
   end
