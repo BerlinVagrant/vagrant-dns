@@ -1,3 +1,9 @@
+## 2.2.3
+
+### Fixes:
+
+* Workaround for a Vargant-on-Ventura issue, crashing the DNS process. [GH-72]
+
 ## 2.2.2
 
 ### Fixes:
