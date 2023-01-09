@@ -37,7 +37,9 @@ Then, register the DNS server as a resolver:
 $ vagrant dns --install
 ```
 
-On OS X, this will create a file `/etc/resolver/test`, which tells OS X to resolve the TLD `.test` by using the nameserver given in this file. You will have to rerun --install every time a tld is added.
+This command will write out a configuration file that tells the operating system to resolve the `.test` TLD via the `vagrant-dns` DNS server. On OS X, this config file is located at `/etc/resolver/test` while on Linux it's at `/etc/systemd/resolved.conf.d/vagrant-dns.conf`.
+
+You will have to rerun --install every time a tld is added.
 
 You can delete this file by running:
 
@@ -45,7 +47,7 @@ You can delete this file by running:
 $ vagrant dns --uninstall
 ```
 
-To also delete the created config file for this TLD (`~/.vagrant.d/tmp/dns/resolver/test` in our example) run:
+To also delete the created config file for this TLD (`~/.vagrant.d/tmp/dns/resolver/test` or `~/.vagrant.d/tmp/dns/resolver/vagrant-dns.conf` in our example) run:
 
 
 ```bash
@@ -60,26 +62,45 @@ $ vagrant dns --start
 
 And test it:
 
+**OS X:**
+
 ```bash
 $ scutil --dns
-...
+[ … ]
 resolver #8
   domain   : test
   nameserver[0] : 127.0.0.1
   port     : 5300
-...
+[ … ]
+
 $ dscacheutil -q host -a name test.machine.test
 name: test.machine.test
 ip_address: 33.33.33.10
 ```
 
-You can now reach the server under the given domain.
+**Linux**:
+
+```bash
+$ resolvectl status
+Global
+       Protocols: LLMNR=resolve -mDNS -DNSOverTLS DNSSEC=no/unsupported
+resolv.conf mode: stub
+      DNS Domain: ~test
+[ … ]
+
+$ resolvectl query test.machine.test
+test.machine.test: 33.33.33.10
+
+-- Information acquired via protocol DNS in 10.1420s.
+-- Data is authenticated: no; Data was acquired via local or encrypted transport: no
+```
 
 **Note:** Mac OS X is quite different from Linux regarding DNS resolution. As a result, do not use
 `dig` or `nslookup`, but `dscacheutil` instead. Read [this article](http://apple.stackexchange.com/a/70583)
 for more information.
 
-Finally, stop the server using:
+
+You can now reach the server under the given domain.
 
 ```bash
 $ vagrant dns --stop
@@ -170,8 +191,7 @@ from inside the guest will also be handled by the DNS server run by the plugin.
 
 ## Issues
 
+* macOS and systemd-resolved enabled Linux only (please read: [Platform Support](https://github.com/BerlinVagrant/vagrant-dns/blob/master/PLATFORM_SUPPORT.md) before ranting about this).
 * `A` records only
 * No IPv6 support
-* OS X only (please read: [Platform
-  Support](https://github.com/BerlinVagrant/vagrant-dns/blob/master/PLATFORM_SUPPORT.md) before ranting about this).
-* For VirtualBox, manual configuration is needed for domain name visibility inside the guests.
+* Not automatically visible inside the box (special configuration of your guest system or provider needed)
