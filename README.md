@@ -146,7 +146,7 @@ We can use [multivm](https://www.vagrantup.com/docs/multi-machine/) configuratio
  
 ## Using custom domains from inside the VM (VirtualBox only)
 
-If you need to be able to resolve custom domains managed by this plugin from inside your virtual machine, add the following 
+If you need to be able to resolve custom domains managed by this plugin from inside your virtual machine (and you're using VirtualBox), add the following
 setting to your `Vagrantfile`:
 
 ```ruby
@@ -174,4 +174,4 @@ from inside the guest will also be handled by the DNS server run by the plugin.
 * No IPv6 support
 * OS X only (please read: [Platform
   Support](https://github.com/BerlinVagrant/vagrant-dns/blob/master/PLATFORM_SUPPORT.md) before ranting about this).
-* Not automatically visible inside the box (special configuration of your guest system or provider needed)
+* For VirtualBox, manual configuration is needed for domain name visibility inside the guests.
