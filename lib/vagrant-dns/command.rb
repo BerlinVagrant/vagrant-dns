@@ -82,19 +82,24 @@ module VagrantDNS
     protected
 
     def manage_installation(vms, options)
-      if Vagrant::Util::Platform.darwin?
-        installer_options = options.fetch(:installer_opts, {})
-        installer = VagrantDNS::Installers::Mac.new(tmp_path, installer_options)
-
-        if options[:install]
-          installer.install!
-        elsif options[:uninstall]
-          installer.uninstall!
-        elsif options[:purge]
-          installer.purge!
+      installer_class =
+        if Vagrant::Util::Platform.darwin?
+          installer_class = VagrantDNS::Installers::Mac
+        elsif Vagrant::Util::Platform.linux?
+          installer_class = VagrantDNS::Installers::Linux
+        else
+          raise 'installing and uninstalling is only supported on Linux and Mac OS X at the moment.'
         end
-      else
-        raise 'installing and uninstalling is only supported on Mac OS X at the moment.'
+
+      installer_options = options.fetch(:installer_opts, {})
+      installer = installer_class.new(tmp_path, installer_options)
+
+      if options[:install]
+        installer.install!
+      elsif options[:uninstall]
+        installer.uninstall!
+      elsif options[:purge]
+        installer.purge!
       end
     end
 
