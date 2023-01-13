@@ -1,3 +1,8 @@
+## 2.4.0 
+
+* 🎉 Linux Support. Many thanks @mattiasb [GH-75]
+* Managed TLDs are now stored in separate config file, which can be inspected via `vagrant dns --list-ltds`.
+
 ## 2.2.3
 
 ### Fixes:
