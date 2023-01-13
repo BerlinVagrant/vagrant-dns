@@ -78,6 +78,15 @@ module VagrantDNS
       end
     end
 
+    def show_tld_config
+      tlds = VagrantDNS::TldRegistry.new(tmp_path).transaction { |store| store&.fetch("tlds", []) }
+      if !tlds.empty?
+        puts tlds
+      else
+        puts "No TLDs configured."
+      end
+    end
+
     private
 
     def run_options(cmd, extra = {})

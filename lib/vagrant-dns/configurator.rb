@@ -34,10 +34,19 @@ module VagrantDNS
       def regenerate_resolvers!
         resolver_folder = self.resolver_folder
         _proto, ip, port = VagrantDNS::Config.listen.first
-        tlds = dns_options(vm)[:tlds]
+        tlds = register_tlds!
 
-        resolver_files(ip, port, tlds, &block) do |filename, contents|
+        resolver_files(ip, port, tlds) do |filename, contents|
           File.write(File.join(resolver_folder, filename), contents)
+        end
+      end
+
+      def register_tlds!
+        add_tlds = dns_options(vm)[:tlds]
+        VagrantDNS::TldRegistry.new(tmp_path).transaction do |store|
+          store["tlds"] ||= []
+          store["tlds"] |= add_tlds
+          store["tlds"]
         end
       end
 
