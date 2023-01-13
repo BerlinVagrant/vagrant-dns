@@ -1,13 +1,15 @@
 Platform Support
 ================
 
-Vagrant-DNS only supports OS X at the moment. This has 2 main reasons:
+Vagrant-DNS was originally developed for macOS (or Mac OS X back in the time). This had 2 main reasons:
 
-1) All main developers are on OS X and have no good idea how to properly implement such a system for other OSes. Also, OS X makes it incredibly easy to do what vagrant-dns does.
+1) All main developers are on macOS and have no good idea how to properly implement such a system for other OSes. Also, macOS makes it incredibly easy to do what vagrant-dns does.
 
 2) We spoke to multiple Linux and Windows-Developers and found that a half-baked implementation of people not invested at the respective platform as a _convenient development_ platform is only harmful and might at worst mess with users systems in unintended ways. None of them have supplied us with a proper way to implement this.
 
-That said, we will happily accept any patches and want to encourage platform support beyond OS X, including ensuring further development of those solutions. Some of the groundwork for this has been layed. It might not be 100% finished, but we happily apply any changes necessary.
+Vagrant-DNS just recently gained support for Linux, more specificity systemd with resolved.
+
+That said, we will happily accept any patches and want to encourage platform support beyond macOS, including ensuring further development of those solutions. Some of the groundwork for this has been layed. It might not be 100% finished, but we happily apply any changes necessary.
 
 This document aims to be a guide to implementing support for other platforms.
 
@@ -23,10 +25,10 @@ Design Goals
 
 Vagrant-DNS should not require superuser access for anything except reconfiguring the hosts DNS system. This is why there is a seperate "install" step that registers the Vagrant-DNS server to your system (for the configured TLDs). (Re)starts of the server (happening at startup of the machine) need to happen without superuser access.
 
-Mac OS X
-========
+macOS
+=====
 
-As a reference, here is how this works on OS X:
+As a reference, here is how this works on macOS:
 
 * `install` places a symlink in `/etc/resolver/{tld}` that links to a corresponding file in `.vagrant.d` with content similar to this one:
 
@@ -40,10 +42,19 @@ From then on, OS X will resolve all requests to that top level domain using the 
 Linux
 =====
 
-To help anyone that attempts a Linux implementation, here is what has already been tried.
+With `systemd-resolved`, we finally got a mechanism that resembles the macOS approach, with some subtile differences.
 
-* Editing resolv.conf: Linux resolv.conf (in contrast to, say OpenBSD) does not allow you to set a port number for the DNS server. Also, its size is limited to 3 servers and the file is often under OS control, so messing around with it might not be advisable.
-* Setting up dnsmasq: this is certainly an option, but we couldn't find out how invasive this was, which Linux flavors might already come with dnsmasq configurations and how not to shoot other people in the foot with it. User help is needed.
+* `install` creates a single file `vagrant-dns.conf`, even when multiple top level domains are configured:
+
+```
+[Resolve]
+DNS=127.0.0.1:5300
+Domains=~test ~othertld
+```
+
+This file is then copied into `/etc/systemd/resolved.conf.d/`. The macOS strategy of adding symlinks from config files to a file within `/home/<user>/` doesn't work since the user that runs systemd-resolved doesn't have permission to read there.
+
+This makes zombie configurations likely. For example when `vagrant-dns` is not correctly uninstalled using its `uninstall` command, its `resolved` configuration will point to a non-existing server, potentially causing troubles.
 
 (Open)BSD
 =========
