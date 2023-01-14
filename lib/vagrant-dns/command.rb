@@ -84,9 +84,9 @@ module VagrantDNS
     def manage_installation(vms, options)
       installer_class =
         if Vagrant::Util::Platform.darwin?
-          installer_class = VagrantDNS::Installers::Mac
+          VagrantDNS::Installers::Mac
         elsif Vagrant::Util::Platform.linux?
-          installer_class = VagrantDNS::Installers::Linux
+          VagrantDNS::Installers::Linux
         else
           raise 'installing and uninstalling is only supported on Linux and Mac OS X at the moment.'
         end

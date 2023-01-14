@@ -2,7 +2,7 @@ module VagrantDNS
   module Installers
     class Linux
       EXEC_STYLES = %i{sudo}
-      CONFIG = "vagrant-dns.conf"
+      RESOLVED_CONFIG = "vagrant-dns.conf"
 
       attr_accessor :tmp_path, :install_path, :exec_style
 
@@ -15,8 +15,8 @@ module VagrantDNS
       def install!
         require 'fileutils'
 
-        src = File.join(tmp_path, "resolver", CONFIG)
-        dest = File.join(install_path, CONFIG)
+        src = File.join(tmp_path, "resolver", RESOLVED_CONFIG)
+        dest = File.join(install_path, RESOLVED_CONFIG)
 
         commands = [
           ['install', '-D', '-m', '0644', '-T', src.shellescape, dest.shellescape],
@@ -27,10 +27,9 @@ module VagrantDNS
       end
 
       def uninstall!
-        require 'fileutils'
-
         commands = [
-          ['rm', File.join(install_path, CONFIG)]
+          ['rm', File.join(install_path, RESOLVED_CONFIG)],
+          ['systemctl', 'reload-or-restart', 'systemd-resolved.service']
         ]
 
         exec(*commands)

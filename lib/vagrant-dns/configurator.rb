@@ -34,14 +34,11 @@ module VagrantDNS
       def regenerate_resolvers!
         FileUtils.mkdir_p(resolver_folder)
 
-        port = VagrantDNS::Config.listen.first.last
-        ip = VagrantDNS::Config.listen.first[1]
+        _, ip, port = VagrantDNS::Config.listen.first
         tlds = dns_options(vm)[:tlds]
 
         resolver_files(ip, port, tlds) do |filename, contents|
-          File.open(File.join(resolver_folder, filename), "w") do |f|
-            f << contents
-          end
+          File.write(File.join(resolver_folder, filename), contents)
         end
       end
 
