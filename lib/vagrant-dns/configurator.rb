@@ -93,7 +93,9 @@ module VagrantDNS
           return
         end
 
-        registry = Registry.new(tmp_path)
+        registry = Registry.open(tmp_path)
+        return unless registry
+
         registry.transaction do
           unless registry.any?
             vm.ui.warn '[vagrant-dns] Configuration missing or empty. No patterns will be removed.'

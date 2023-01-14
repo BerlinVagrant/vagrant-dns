@@ -67,23 +67,28 @@ module VagrantDNS
     end
 
     def show_config
-      registry = Registry.new(tmp_path).to_hash
+      registry = Registry.open(tmp_path)
+      return unless registry
 
-      if registry.any?
-        registry.each do |pattern, ip|
+      config = registry.to_hash
+      if config.any?
+        config.each do |pattern, ip|
           puts format("%s => %s", pattern.inspect, ip)
         end
       else
-        puts "Configuration missing or empty."
+        puts "Pattern configuration missing or empty."
       end
     end
 
     def show_tld_config
-      tlds = VagrantDNS::TldRegistry.new(tmp_path).transaction { |store| store&.fetch("tlds", []) }
-      if !tlds.empty?
-        puts tlds
-      else
+      tld_registry = VagrantDNS::TldRegistry.open(tmp_path)
+      return unless tld_registry
+
+      tlds = tld_registry.transaction { |store| store.fetch("tlds", []) }
+      if !tlds || tlds.empty?
         puts "No TLDs configured."
+      else
+        puts tlds
       end
     end
 
