@@ -6,8 +6,9 @@ shared_examples 'provider/dns_dhcp_private' do |provider, options|
   end
 
   include_context 'acceptance'
-  let(:tmp_path) { environment.homedir }
+  let(:tmp_path) { environment.instance_variable_get(:@homedir) }
 
+  let(:box_ip) { '172.28.128.' } # that's some default dhcp range here
   let(:tld)    { 'spec' }
   let(:name)   { 'dhcp-private.testbox.spec' }
 
@@ -19,7 +20,7 @@ shared_examples 'provider/dns_dhcp_private' do |provider, options|
   describe 'installation' do
     it 'creates and removes resolver link with logged warning that no IP could be found' do
       result = assert_execute('vagrant', 'dns', '--install', '--with-sudo')
-      expect(result.stdout).to include("[vagrant-dns] Could not find any static network IP.")
+      expect(result.stdout).to include("[vagrant-dns] Postponing running user provided IP script until box has started.")
       expect(result.stdout).to include("[vagrant-dns] No patterns will be configured.")
 
       assert_execute('sudo', 'test', '-f', "/etc/resolver/#{tld}")
@@ -58,7 +59,7 @@ shared_examples 'provider/dns_dhcp_private' do |provider, options|
         \\s*nameserver\\[0\\]\\s*: 127.0.0.1
         \\s*port\\s*: 5333
         \\s*flags\\s*: Request A records, Request AAAA records
-        \\s*reach\\s*:(?=.*\\bReachable\\b)(?=.*\\bLocal Address\\b).*
+        \\s*reach\\s*: Reachable,\\s?Local Address(, Directly Reachable Address)?
       TXT
 
       result = assert_execute('scutil', '--dns')
@@ -70,9 +71,15 @@ shared_examples 'provider/dns_dhcp_private' do |provider, options|
       expect(result.stdout).to be_empty
     end
 
-    it 'vagrant box starts up and is usable' do
-      result = assert_execute('vagrant', 'ssh', '-c', 'whoami')
-      expect(result.stdout).to include("vagrant")
+    it 'responds to host-names' do
+      result = assert_execute('dscacheutil', '-q', 'host', '-a', 'name', "#{name}")
+      expect(result.stdout).to include("ip_address: #{box_ip}")
+
+      result = assert_execute('dscacheutil', '-q', 'host', '-a', 'name', "www.#{name}")
+      expect(result.stdout).to include("ip_address: #{box_ip}")
+
+      result = execute('dscacheutil', '-q', 'host', '-a', 'name', "notthere.#{tld}")
+      expect(result.stdout).to_not include("ip_address: #{box_ip}")
     end
   end
 end

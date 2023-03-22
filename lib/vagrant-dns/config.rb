@@ -1,4 +1,4 @@
-require 'logger'
+require "logger"
 
 module VagrantDNS
   class Config < Vagrant.plugin(2, :config)
@@ -37,7 +37,7 @@ module VagrantDNS
         failed_tlds = vm.config.dns.tlds.select { |tld| list.find(tld, default: false) }
 
         err = if failed_tlds.any?
-          "tlds include a public suffix: #{failed_tlds.join(', ')}"
+          "tlds include a public suffix: #{failed_tlds.join(", ")}"
         end
 
         if err && check_public_suffix.to_s == "error"
@@ -50,7 +50,7 @@ module VagrantDNS
       end
     end
 
-    attr_accessor :records
+    attr_accessor :records, :ip
     attr_reader :tlds, :patterns
 
     def pattern=(pattern)
@@ -68,11 +68,7 @@ module VagrantDNS
 
     # explicit hash, to get symbols in hash keys
     def to_hash
-      {
-        :patterns => patterns,
-        :records => records,
-        :tlds => tlds
-      }
+      { patterns: patterns, records: records, tlds: tlds, ip: ip }
     end
 
     def validate(machine)
@@ -96,4 +92,3 @@ module VagrantDNS
     end
   end
 end
-
