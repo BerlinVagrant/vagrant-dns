@@ -1,7 +1,6 @@
-require "pp"
 shared_examples 'provider/tld_public_suffix' do |provider, options|
 
-  if !File.file?(options[:box])
+  if options[:box] && !File.file?(options[:box])
     raise ArgumentError,
       "A box file #{options[:box]} must be downloaded for provider: #{provider}. Try: rake acceptance:setup"
   end

@@ -7,6 +7,9 @@ ENV['TEST_VAGRANT_VERSION'] ||= 'v2.3.4'
 # during acceptance tests.
 group :plugins do
   gemspec
+  # source "https://gems.hashicorp.com/" do
+  #   gem "vagrant-vmware-desktop"
+  # end
 end
 
 group :test, :development do

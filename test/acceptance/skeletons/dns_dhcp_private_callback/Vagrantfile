@@ -19,7 +19,6 @@ Vagrant.configure("2") do |global_config|
       ip
     end
 
-
-    VagrantDNS::Config.listen = [[:udp, "0.0.0.0", 5333]]
+    VagrantDNS::Config.listen = [[:udp, "127.0.0.1", 5333]]
   end
 end

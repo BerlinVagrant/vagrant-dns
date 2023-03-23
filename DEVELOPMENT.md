@@ -20,5 +20,20 @@ bundle exec rake -D acceptance
 bundle exec rake acceptance:setup:virtualbox
 
 # Run tests
-rake acceptance:virtualbox
+bundle exec rake acceptance:virtualbox
+```
+
+### On other providers
+
+1. If it's not a default provider, add it to to `Gemfile` as a dependency and re-run `bundle install`.
+2. Add a box provider name to box URL mapping to the `TEST_BOXES` hash in `tasks/acceptance.rake`
+3. Run the `acceptance` rake task like above, replacing `virtualbox` with your provider.
+
+
+### VMware IPs
+
+VMware uses IPs from its bridges for DHCP and static private networks. Check IP and net masks using:
+
+```console
+ifconfig -X bridge | grep 'inet ' | grep -v '127.0.0.1' | awk '{ print $2 "\t" $4 }'
 ```

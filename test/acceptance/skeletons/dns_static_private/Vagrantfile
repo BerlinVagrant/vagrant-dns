@@ -3,11 +3,19 @@
 
 Vagrant.configure("2") do |config|
   config.vm.box = "box"
-  config.vm.network :private_network, ip: '10.10.10.101'
+
+  # skip custom subnet and mask by default, add for virtualbox
+  # https://developer.hashicorp.com/vagrant/docs/providers/vmware/known-issues#creating-network-devices
+  config.vm.network :private_network
 
   # vagrant-specs will fail otherwise
-  config.vm.provider "virtualbox" do |v|
+  config.vm.provider "virtualbox" do |v, override|
+    override.vm.network :private_network, ip: '10.10.10.101'
     v.gui = true
+  end
+
+  config.vm.provider "vmware_desktop" do |v, override|
+    override.vm.network :private_network, ip: '192.168.134.111'
   end
 
   # we don't need synced_folder, also they might lead to failures due
@@ -17,5 +25,5 @@ Vagrant.configure("2") do |config|
   config.dns.tld      = 'spec'
   config.dns.patterns = /^.*private.testbox.spec$/
 
-  VagrantDNS::Config.listen = [[:udp, "0.0.0.0", 5333]]
+  VagrantDNS::Config.listen = [[:udp, "127.0.0.1", 5333]]
 end

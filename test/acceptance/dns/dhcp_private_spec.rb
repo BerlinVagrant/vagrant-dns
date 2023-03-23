@@ -1,6 +1,6 @@
 shared_examples 'provider/dns_dhcp_private' do |provider, options|
 
-  if !File.file?(options[:box])
+  if options[:box] && !File.file?(options[:box])
     raise ArgumentError,
       "A box file #{options[:box]} must be downloaded for provider: #{provider}. Try: rake acceptance:setup"
   end
@@ -8,6 +8,7 @@ shared_examples 'provider/dns_dhcp_private' do |provider, options|
   include_context 'acceptance'
   let(:tmp_path) { environment.homedir }
 
+  let(:box_ip) { /(172|192).\d+.\d+.\d+/ } # that's some default dhcp range here
   let(:tld)    { 'spec' }
   let(:name)   { 'dhcp-private.testbox.spec' }
 
@@ -19,7 +20,7 @@ shared_examples 'provider/dns_dhcp_private' do |provider, options|
   describe 'installation' do
     it 'creates and removes resolver link with logged warning that no IP could be found' do
       result = assert_execute('vagrant', 'dns', '--install', '--with-sudo')
-      expect(result.stdout).to include("[vagrant-dns] Could not find any static network IP.")
+      expect(result.stdout).to include("[vagrant-dns] Postponing running user provided IP script until box has started.")
       expect(result.stdout).to include("[vagrant-dns] No patterns will be configured.")
 
       assert_execute('sudo', 'test', '-f', "/etc/resolver/#{tld}")
@@ -65,9 +66,15 @@ shared_examples 'provider/dns_dhcp_private' do |provider, options|
       expect(result.stdout).to match(expected_output)
     end
 
-    it 'does not respond to host-names' do
+    it 'responds to host-names' do
       result = assert_execute('dscacheutil', '-q', 'host', '-a', 'name', "#{name}")
-      expect(result.stdout).to be_empty
+      expect(result.stdout).to match(/ip_address: #{box_ip}/)
+
+      result = assert_execute('dscacheutil', '-q', 'host', '-a', 'name', "www.#{name}")
+      expect(result.stdout).to match(/ip_address: #{box_ip}/)
+
+      result = execute('dscacheutil', '-q', 'host', '-a', 'name', "notthere.#{tld}")
+      expect(result.stdout).to_not match(/ip_address: #{box_ip}/)
     end
 
     it 'vagrant box starts up and is usable' do
