@@ -7,8 +7,8 @@ Vagrant.configure("2") do |config|
   # please see the online documentation at vagrantup.com.
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box     = 'precise32'
-  config.vm.box_url = 'http://files.vagrantup.com/precise32.box'
+  config.vm.box     = 'hashicorp/bionic64'
+  # config.vm.box_url = 'http://files.vagrantup.com/precise32.box'
 
   config.vm.synced_folder ".", "/vagrant", disabled: true
 
@@ -20,13 +20,13 @@ Vagrant.configure("2") do |config|
 
   config.dns.tld      = "test"
   config.dns.patterns = /^.*machine.test$/
-  config.dns.ip       = -> (vm, opts) do
-    ip = nil
-    vm.communicate.execute("hostname -I") do |type, data|
-      ip = data.split[1] if type == :stdout
-    end
-    ip
-  end
+  # config.dns.ip = -> (vm, opts) do
+  #   ip = nil
+  #   vm.communicate.execute("hostname -I | cut -d ' ' -f 1") do |type, data|
+  #     ip = data.strip if type == :stdout
+  #   end
+  #   ip
+  # end
 
   VagrantDNS::Config.listen = [[:udp, "0.0.0.0", 5300]]
   VagrantDNS::Config.ttl = 30
