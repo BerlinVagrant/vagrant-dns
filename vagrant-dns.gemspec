@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["florian.gilcher@asquera.de", "robert@dotless.de"]
   gem.description   = %q{vagrant-dns is a vagrant plugin that manages DNS records associated with local machines.}
   gem.summary       = %q{vagrant-dns manages DNS records of vagrant machines}
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/BerlinVagrant/vagrant-dns"
   gem.license       = "MIT"
 
   gem.files         = `git ls-files`.split($\).reject { |f| f.match(%r{^(test|testdrive)/}) }
@@ -15,6 +15,13 @@ Gem::Specification.new do |gem|
   gem.name          = "vagrant-dns"
   gem.require_paths = ["lib"]
   gem.version       = VagrantDNS::VERSION
+
+  gem.metadata = {
+    "bug_tracker_uri" => "https://github.com/BerlinVagrant/vagrant-dns/issues",
+    "changelog_uri"   => "https://github.com/BerlinVagrant/vagrant-dns/blob/master/CHANGELOG.md",
+    "source_code_uri" => "https://github.com/BerlinVagrant/vagrant-dns",
+    "wiki_uri"        => "https://github.com/BerlinVagrant/vagrant-dns/wiki"
+  }
 
   gem.required_ruby_version = '>= 2.2.6'
 
