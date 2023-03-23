@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby(ENV['TEST_RUBY_VERSION'] || '~> 2.7.3')
+ruby(File.read(File.expand_path('.ruby-version', __dir__))[/\d+\.\d+\.\d+.*/])
 
 ENV['TEST_VAGRANT_VERSION'] ||= 'v2.3.4'
 

@@ -2,7 +2,8 @@
 
 TODO: Expand this section :)
 
-The `Gemfile` uses two environment variables, `TEST_RUBY_VERSION` and `TEST_VAGRANT_VERSION` to control which version of ruby and vagrant are used during local development.
+The `Gemfile` uses the `TEST_VAGRANT_VERSION` environment variable to control which version of vagrant is used during local development.
+To adjust the ruby version used, change the contents of the `.ruby-version` file, even if you don't use a ruby version manager.
 
 ## Running Acceptance Tests
 
