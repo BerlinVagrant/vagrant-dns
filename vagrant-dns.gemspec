@@ -25,7 +25,7 @@ Gem::Specification.new do |gem|
   # Pinning async gem to work around an issue in vagrant, where it does not
   # honor "required_ruby_version" while resolving sub-dependencies.
   # see: https://github.com/hashicorp/vagrant/issues/12640
-  gem.add_dependency 'async', '< 2'
+  gem.add_dependency 'async', '~> 1.30', '>= 1.30.3'
 
   gem.add_development_dependency 'rspec'
 end
