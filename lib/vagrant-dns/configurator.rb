@@ -120,16 +120,8 @@ module VagrantDNS
     private def vm_ip(opts)
       user_ip = opts[:ip]
 
-      if !user_ip && has_dhcp_network?(opts)
-        user_ip = proc { |vm|
-          vm.guest.capability(:read_ip_address).tap { |ip|
-            if ip
-              vm.ui.info "[vagrant-dns] Identified DHCP IP as '#{ip}'."
-            else
-              vm.ui.warn "[vagrant-dns] Could not identify DHCP IP."
-            end
-          }
-        }
+      if !user_ip && has_dhcp_network?(opts) || [:dynamic, :dhcp].include?(user_ip)
+        user_ip = DYNAMIC_VM_IP
       end
 
       ip =
@@ -162,6 +154,13 @@ module VagrantDNS
           _ip
         end
 
+      # we where unable to find an IP, and there's no user-supplied callback
+      # falling back to dynamic/dhcp style detection
+      if !ip && !user_ip
+        vm.ui.info "[vagrant-dns] Falling back to dynamic IP detection."
+        ip = DYNAMIC_VM_IP.call(vm, opts.dup.freeze)
+      end
+
       if !ip || ip.empty?
         vm.ui.warn "[vagrant-dns] Failed to identify IP."
         return
@@ -182,6 +181,17 @@ module VagrantDNS
 
       network.last[:ip] if network
     end
+
+    DYNAMIC_VM_IP = proc { |vm|
+      vm.guest.capability(:read_ip_address).tap { |ip|
+        if ip
+          vm.ui.info "[vagrant-dns] Identified DHCP IP as '#{ip}'."
+        else
+          vm.ui.warn "[vagrant-dns] Could not identify DHCP IP."
+        end
+      }
+    }
+    private_constant :DYNAMIC_VM_IP
 
     private def resolver_files(ip, port, tlds, &block)
       installer_class = VagrantDNS::Installers.resolve

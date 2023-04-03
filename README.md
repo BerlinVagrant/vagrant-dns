@@ -181,9 +181,12 @@ __NOTES__: In order to obtain the IP in this way, the vagrant box needs to be up
 * `vm.dns.patterns`: A list of domain patterns to match. Defaults to `[/^.*{host_name}.{tld}$/]`
 * `vm.dns.ip`: Optional, overwrite of the default static IP detection. Valid values are:
   - `Proc`: A Proc which return value will get used as IP. Eg: `proc { |vm, opts| }` (See DHCP section for full sample)
-  - `Symbol`: Forces the use of the named static network. eg: `:private_network` or `:public_network`
+  - `Symbol`: Forces the use of the named static network: 
+    + `:private_network`: Use static ip of a configured private network (`config.vm.network "private_network", ip: "192.168.50.4"`)
+    + `:public_network`: Use static ip of a configured public network (`config.vm.network "public_network", ip: "192.168.0.17"`)
+    + `:dynamic`, `:dhcp`: Force reading the guest IP using vagrants build-in `read_ip_address` capability.
   - Default:
-      If there is any DHCP network, use the build-in `read_ip_address` capability.
+      If there is no network with a statically defined IP, and no `ip` override is given, use the build-in `read_ip_address` capability.
       Else, check `:private_network`, if none found check `:public_network`
 
 ## Global Options
