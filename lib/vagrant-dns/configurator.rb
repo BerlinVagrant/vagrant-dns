@@ -120,7 +120,7 @@ module VagrantDNS
     private def vm_ip(opts)
       user_ip = opts[:ip]
 
-      if !user_ip && has_dhcp_network?(opts) || [:dynamic, :dhcp].include?(user_ip)
+      if !user_ip && dynamic_ip_network?(opts) || [:dynamic, :dhcp].include?(user_ip)
         user_ip = DYNAMIC_VM_IP
       end
 
@@ -169,10 +169,8 @@ module VagrantDNS
       ip
     end
 
-    private def has_dhcp_network?(opts)
-      opts[:networks].any? { |(nw_type, nw_config)|
-        nw_config[:type] == :dhcp && (nw_type == :private_network || nw_type == :public_network)
-      }
+    private def dynamic_ip_network?(opts)
+      opts[:networks].none? { |(_nw_type, nw_config)| nw_config[:ip] }
     end
 
     # tries to find an IP in the configured +type+ networks
