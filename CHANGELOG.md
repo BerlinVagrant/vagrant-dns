@@ -1,3 +1,7 @@
+## HEAD
+
+* DHCP support. [GH-51]
+
 ## 2.3.0 (2023-01-14)
 
 * 🎉 Linux Support. Many thanks @mattiasb [GH-75]
