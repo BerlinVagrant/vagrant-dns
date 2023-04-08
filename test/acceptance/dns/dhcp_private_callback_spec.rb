@@ -1,4 +1,4 @@
-shared_examples 'provider/dns_dhcp_private' do |provider, options|
+shared_examples 'provider/dns_dhcp_private_callback' do |provider, options|
 
   if options[:box] && !File.file?(options[:box])
     raise ArgumentError,
@@ -6,15 +6,15 @@ shared_examples 'provider/dns_dhcp_private' do |provider, options|
   end
 
   include_context 'acceptance'
-  let(:tmp_path) { environment.homedir }
+  let(:tmp_path) { environment.instance_variable_get(:@homedir) }
 
   let(:box_ip) { /(172|192).\d+.\d+.\d+/ } # that's some default dhcp range here
   let(:tld)    { 'spec' }
-  let(:name)   { 'dhcp-private.testbox.spec' }
+  let(:name)   { 'plain-dhcp-private.testbox.spec' }
 
   before do
     ENV['VAGRANT_DEFAULT_PROVIDER'] = provider
-    environment.skeleton('dns_dhcp_private')
+    environment.skeleton('dns_dhcp_private_callback')
   end
 
   describe 'installation' do
@@ -75,11 +75,6 @@ shared_examples 'provider/dns_dhcp_private' do |provider, options|
 
       result = execute('dscacheutil', '-q', 'host', '-a', 'name', "notthere.#{tld}")
       expect(result.stdout).to_not match(/ip_address: #{box_ip}/)
-    end
-
-    it 'vagrant box starts up and is usable' do
-      result = assert_execute('vagrant', 'ssh', '-c', 'whoami')
-      expect(result.stdout).to include("vagrant")
     end
   end
 end

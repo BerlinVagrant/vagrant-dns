@@ -1,6 +1,6 @@
 shared_examples 'provider/dns_static_private' do |provider, options|
 
-  if !File.file?(options[:box])
+  if options[:box] && !File.file?(options[:box])
     raise ArgumentError,
       "A box file #{options[:box]} must be downloaded for provider: #{provider}. Try: rake acceptance:setup"
   end
@@ -8,7 +8,12 @@ shared_examples 'provider/dns_static_private' do |provider, options|
   include_context 'acceptance'
   let(:tmp_path) { environment.homedir }
 
-  let(:box_ip) { '10.10.10.101' }
+  let(:box_ip) do
+    case provider
+    when "virtualbox" then '10.10.10.101'
+    when "vmware_desktop" then '192.168.134.111'
+    end
+  end
   let(:tld)    { 'spec' }
   let(:name)   { 'private.testbox.spec' }
 
@@ -114,7 +119,7 @@ shared_examples 'provider/dns_static_private' do |provider, options|
       result = assert_execute('vagrant', 'dns', '--list')
       expect(result.stdout).to_not include(name)
       expect(result.stdout).to_not include(box_ip)
-      expect(result.stdout).to include("Configuration missing or empty.")
+      expect(result.stdout).to include("Pattern configuration missing or empty.")
     end
   end
 end

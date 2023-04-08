@@ -1,6 +1,6 @@
 shared_examples 'provider/dns_static_public' do |provider, options|
 
-  if !File.file?(options[:box])
+  if options[:box] && !File.file?(options[:box])
     raise ArgumentError,
       "A box file #{options[:box]} must be downloaded for provider: #{provider}. Try: rake acceptance:setup"
   end
@@ -114,7 +114,7 @@ shared_examples 'provider/dns_static_public' do |provider, options|
       result = assert_execute('vagrant', 'dns', '--list')
       expect(result.stdout).to_not include(name)
       expect(result.stdout).to_not include(box_ip)
-      expect(result.stdout).to include("Configuration missing or empty.")
+      expect(result.stdout).to include("Pattern configuration missing or empty.")
     end
   end
 end

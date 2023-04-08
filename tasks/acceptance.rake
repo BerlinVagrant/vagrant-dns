@@ -11,7 +11,9 @@ namespace :acceptance do
     # Ubuntu 16.04 https://app.vagrantup.com/ubuntu/boxes/xenial64.json
     # :virtualbox => "https://vagrantcloud.com/ubuntu/boxes/xenial64/versions/20180511.0.0/providers/virtualbox.box"
     # Ubuntu 18.04 https://app.vagrantup.com/ubuntu/boxes/bionic64.json
-    :virtualbox => "https://vagrantcloud.com/ubuntu/boxes/bionic64/versions/20180709.0.0/providers/virtualbox.box"
+    virtualbox: "https://vagrantcloud.com/ubuntu/boxes/bionic64/versions/20180709.0.0/providers/virtualbox.box",
+    # Ubuntu 22.10 https://app.vagrantup.com/bento/boxes/ubuntu-22.10
+    vmware_desktop: "https://app.vagrantup.com/bento/boxes/ubuntu-22.10/versions/202303.13.0/providers/vmware_desktop.box"
   }
 
   TEST_BOXES.each do |provider, box_url|

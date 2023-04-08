@@ -12,11 +12,11 @@ Alternatively, you can install an older version of vagrant-dns like this: `vagra
 
 ## Usage
 
-In addition to your networking config, configure a toplevel domain and a `hostname` for your machine. Optionally, configure a set of free matching patterns. Global configuration options can be given through the `VagrantDNS::Config` object:
+In addition to your networking config, configure a top-level domain and a `hostname` for your machine. Optionally, configure a set of free matching patterns. Global configuration options can be given through the `VagrantDNS::Config` object:
 
 ```ruby
 Vagrant.configure("2") do |config|
-  #...
+  # ...
 
   config.dns.tld = "test"
 
@@ -148,12 +148,20 @@ We can use [multivm](https://www.vagrantup.com/docs/multi-machine/) configuratio
 *  Execute : `vagrant dns --install`
 *  Test via: `ping worker2.mysite.box` or `worker1.mysite.box`
 
-
 ## VM options
 
 * `vm.dns.tld`: Set the tld for the given virtual machine. No default.
-* `vm.dns.tlds`: Set multiple tlds. Default: `[tld]`
+* `vm.dns.tlds`: Set multiple TLDs. Default: `[tld]`
 * `vm.dns.patterns`: A list of domain patterns to match. Defaults to `[/^.*{host_name}.{tld}$/]`
+* `vm.dns.ip`: Optional, overwrite of the default static IP detection. Valid values are:
+  - `Proc`: A Proc which return value will get used as IP. Eg: `proc { |vm, opts| }` (See DHCP section for full sample)
+  - `Symbol`: Forces the use of the named static network: 
+    + `:private_network`: Use static ip of a configured private network (`config.vm.network "private_network", ip: "192.168.50.4"`)
+    + `:public_network`: Use static ip of a configured public network (`config.vm.network "public_network", ip: "192.168.0.17"`)
+    + `:dynamic`, `:dhcp`: Force reading the guest IP using vagrants build-in `read_ip_address` capability.
+  - Default:
+      If there is no network with a statically defined IP, and no `ip` override is given, use the build-in `read_ip_address` capability.
+      Else, check `:private_network`, if none found check `:public_network`
 
 ## Global Options
 
@@ -162,7 +170,7 @@ We can use [multivm](https://www.vagrantup.com/docs/multi-machine/) configuratio
 * `VagrantDNS::Config.auto_run`: (re)start and reconfigure the server every time a machine is started. On by default.
 * `VagrantDNS::Config.check_public_suffix`: Check if you are going to configure a [Public Suffix](https://publicsuffix.org/) (like a Top Level Domain) in a VMs `tld(s)` config, which could mess up your local dev machines DNS config. Possible configuration values are:
   - `false`: Disables the feature.
-  - `"warn"`: Check and print a warning. (Still creates a resolver config and potentionally messes up your DNS) **At the moment, this is the default** because lots of projetcs used to use `"dev"` as a TLD, but this got registered by google and is now a public suffix.
+  - `"warn"`: Check and print a warning. (Still creates a resolver config and potentially messes up your DNS) **At the moment, this is the default** because lots of projects used to use `"dev"` as a TLD, but this got registered by google and is now a public suffix.
   - `"error"`: Check and prevent the box from starting. (Does not create the resolver config, it will also prevent the box from starting.)
  
 ## Using custom domains from inside the VM (VirtualBox only)
@@ -188,6 +196,32 @@ By default, the Virtualbox NAT engine offers the same DNS servers to the guest t
 setting, however, the NAT engine will act as a DNS proxy 
 (see [Virtualbox docs](https://www.virtualbox.org/manual/ch09.html#nat-adv-dns)). That way, queries for your custom domains
 from inside the guest will also be handled by the DNS server run by the plugin.
+
+## DHCP / Dynamic IP
+
+When configuring your VM with a DHCP network, vagrant-dns tries to identify the guest IP using vagrants build-in `read_ip_address` capability.
+
+For more fine-grained control use the `ip` config.
+Here is an example using the VM's default way of communication and using the `hostname` command on it:
+
+```ruby
+Vagrant.configure("2") do |config|
+  # ...
+
+  # - `vm` is the vagrant virtual machine instance and can be used to communicate with it
+  # - `opts` is the vagrant-dns options hash (everything configured via `config.dns.*`)
+  config.dns.ip = -> (vm, opts) do
+    # note: the block handed to `execute` might get called multiple times, hence this closure
+    ip = nil
+    vm.communicate.execute("hostname -I | cut -d ' ' -f 1") do |type, data|
+      ip = data.strip if type == :stdout
+    end
+    ip
+  end
+end
+```
+
+__NOTES__: In order to obtain the IP in this way, the vagrant box needs to be up and running. You will get a log output (`Postponing running user provided IP script until box has started.`) when you try to run `vagrant dns`  on a non-running box.
 
 ## Issues
 

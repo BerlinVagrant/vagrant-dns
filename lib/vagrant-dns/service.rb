@@ -92,9 +92,7 @@ module VagrantDNS
       end
     end
 
-    private
-
-    def run_options(cmd, extra = {})
+    private def run_options(cmd, extra = {})
       daemon_dir = File.join(tmp_path, "daemon")
       {
         ARGV: [cmd],
@@ -103,7 +101,7 @@ module VagrantDNS
         log_output: true,
         log_dir: daemon_dir,
         **extra
-     }
+      }
     end
   end
 end
