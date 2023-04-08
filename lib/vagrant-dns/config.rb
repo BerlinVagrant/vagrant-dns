@@ -3,7 +3,8 @@ require "logger"
 module VagrantDNS
   class Config < Vagrant.plugin(2, :config)
     class << self
-      attr_accessor :listen, :ttl, :logger, :auto_run, :check_public_suffix
+      attr_writer :listen, :ttl, :resolver
+      attr_accessor :logger, :auto_run, :check_public_suffix
 
       def listen
         @listen ||= [[:udp, "127.0.0.1", 5300]]
@@ -11,6 +12,10 @@ module VagrantDNS
 
       def ttl
         @ttl ||= 300
+      end
+
+      def resolver
+        @resolver ||= :system
       end
 
       def auto_run

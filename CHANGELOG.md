@@ -1,6 +1,9 @@
 ## HEAD
 
 * DHCP support. [GH-51]
+* Non-A-queries (like IPv6 AAAA) matching a configured pattern will be answered with a `NOTIMP` error. [GH-76]
+* Upstream / passthrough DNS servers are now configurable, defaulting to the system config (existing behavior).  
+  If set to `false`, passthrough is disabled and queries are answered with a `NXDOMAIN` error. [GH-76]
 
 ## 2.3.0 (2023-01-14)
 

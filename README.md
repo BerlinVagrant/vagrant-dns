@@ -172,7 +172,11 @@ We can use [multivm](https://www.vagrantup.com/docs/multi-machine/) configuratio
   - `false`: Disables the feature.
   - `"warn"`: Check and print a warning. (Still creates a resolver config and potentially messes up your DNS) **At the moment, this is the default** because lots of projects used to use `"dev"` as a TLD, but this got registered by google and is now a public suffix.
   - `"error"`: Check and prevent the box from starting. (Does not create the resolver config, it will also prevent the box from starting.)
- 
+* `VagrantDNS::Config.resolver`: By default, DNS queries not matching any patterns will be passed to an upstream DNS server.
+  - `false`: Disable passthrough
+  - `:system`: (Default) pass through to the system configured default DNS server
+  - `[[:udp, "1.1.1.1", 53], [:tcp, "1.1.1.1", 53]]`: an Array of Arrays describing the DNS server(s) to use. (Protocol, IP, Port)
+
 ## Using custom domains from inside the VM (VirtualBox only)
 
 If you need to be able to resolve custom domains managed by this plugin from inside your virtual machine (and you're using VirtualBox), add the following

@@ -31,4 +31,6 @@ Vagrant.configure("2") do |config|
 
   VagrantDNS::Config.listen = [[:udp, "127.0.0.1", 5300]]
   VagrantDNS::Config.ttl = 30
+
+  VagrantDNS::Config.resolver = [ [:udp, "1.0.0.1", 53], ["tcp", "1.0.0.1", 53] ]
 end
