@@ -172,8 +172,11 @@ We can use [multivm](https://www.vagrantup.com/docs/multi-machine/) configuratio
   - `false`: Disables the feature.
   - `"warn"`: Check and print a warning. (Still creates a resolver config and potentially messes up your DNS) **At the moment, this is the default** because lots of projects used to use `"dev"` as a TLD, but this got registered by google and is now a public suffix.
   - `"error"`: Check and prevent the box from starting. (Does not create the resolver config, it will also prevent the box from starting.)
-* `VagrantDNS::Config.resolver`: By default, DNS queries not matching any patterns will be passed to an upstream DNS server.
-  - `false`: Disable passthrough
+* `VagrantDNS::Config.passthrough`: Configure how to deal with non-matching DNS queries
+  - `true`: (default) Every non-matching query is passed through to the upstream DNS server (see `passthrough_resolver`)
+  - `false`: Disable passthrough. Every non-A-query to a matching pattern fails with `NotImp`. Every other query fails with `NXDomain`.
+  - `:unknown`: Only forward queries for which there's no matching pattern. Every non-A-query to a matching pattern fails with `NotImp`. Every other query will be passed through.
+* `VagrantDNS::Config.passthrough_resolver`: By default, DNS queries not matching any patterns will be passed to an upstream DNS server.
   - `:system`: (Default) pass through to the system configured default DNS server
   - `[[:udp, "1.1.1.1", 53], [:tcp, "1.1.1.1", 53]]`: an Array of Arrays describing the DNS server(s) to use. (Protocol, IP, Port)
 

@@ -3,7 +3,7 @@ require "logger"
 module VagrantDNS
   class Config < Vagrant.plugin(2, :config)
     class << self
-      attr_writer :listen, :ttl, :resolver
+      attr_writer :listen, :ttl, :passthrough, :passthrough_resolver
       attr_accessor :logger, :auto_run, :check_public_suffix
 
       def listen
@@ -14,8 +14,13 @@ module VagrantDNS
         @ttl ||= 300
       end
 
-      def resolver
-        @resolver ||= :system
+      def passthrough
+        return true if @passthrough.nil?
+        @passthrough
+      end
+
+      def passthrough_resolver
+        @passthrough_resolver ||= :system
       end
 
       def auto_run

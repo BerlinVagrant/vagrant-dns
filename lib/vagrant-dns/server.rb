@@ -4,9 +4,9 @@ require 'async/dns/system'
 
 module VagrantDNS
   class Server
-    attr_reader :registry, :listen, :ttl, :resolver
+    attr_reader :registry, :listen, :ttl, :resolver, :passthrough
 
-    def initialize(registry, listen:, ttl:, resolver:)
+    def initialize(registry, listen:, ttl:, resolver:, passthrough:)
       @registry = registry.to_hash
       @listen = listen
       @ttl = ttl
@@ -18,13 +18,28 @@ module VagrantDNS
       else
         RubyDNS::Resolver.new(resolver)
       end
+
+      if passthrough && !resolver
+        puts "[Warning] 'passthrough' config has no effect, sice no passthrough resolver is set."
+      end
+
+      @passthrough = !!@resolver && passthrough
     end
 
     def run
       # need those clusures for the +RubyDNS::run_server+ block
+      passthrough = self.passthrough
       registry = self.registry
       resolver = self.resolver
       ttl = self.ttl
+
+      _passthrough = if passthrough
+        proc do |transaction|
+          transaction.passthrough!(resolver) do |response|
+            puts "Passthrough response: #{response.inspect}"
+          end
+        end
+      end
 
       RubyDNS::run_server(listen) do
         # match all known patterns first
@@ -34,23 +49,32 @@ module VagrantDNS
           end
         end
 
-        # fail only known patterns for non-A queries
-        registry.each do |pattern, ip|
-          match(pattern) do |transaction, match_data|
-            transaction.fail!(:NotImp)
-          end
-        end
-
-        if resolver
-          otherwise do |transaction|
-            transaction.passthrough!(resolver) do |response|
-              puts "Passthrough response: #{response.inspect}"
+        case passthrough
+        when true
+          # forward everything
+          otherwise(&_passthrough)
+        when false
+          # fail known patterns for non-A queries as NotImp
+          registry.each do |pattern, ip|
+            match(pattern) do |transaction, match_data|
+              transaction.fail!(:NotImp)
             end
           end
-        else
+
+          # unknown pattern end up as NXDomain
           otherwise do |transaction|
             transaction.fail!(:NXDomain)
           end
+        when :unknown
+          # fail known patterns for non-A queries as NotImp
+          registry.each do |pattern, ip|
+            match(pattern) do |transaction, match_data|
+              transaction.fail!(:NotImp)
+            end
+          end
+
+          # forward only unknown patterns
+          otherwise(&_passthrough)
         end
       end
     end

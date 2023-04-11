@@ -38,7 +38,8 @@ module VagrantDNS
           Registry.new(tmp_path),
           listen: VagrantDNS::Config.listen,
           ttl: VagrantDNS::Config.ttl,
-          resolver: VagrantDNS::Config.resolver
+          passthrough: VagrantDNS::Config.passthrough,
+          resolver: VagrantDNS::Config.passthrough_resolver
         ).run
       end
     end
