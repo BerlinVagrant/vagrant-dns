@@ -30,7 +30,7 @@
 
 ## 2.2.0
 
-### New Feautres:
+### New Features:
 
 * Add global config for time-to-live via `VagrantDNS::Config.ttl`
 
@@ -41,16 +41,16 @@
 
 ### Breaking Changes:
 
-* Removes the global and vm config  `ipv4only`. It was nver been used.
+* Removes the global and vm config  `ipv4only`. It was never been used.
 
 ### Changes:
 
-* Resources will now respond with a low TTL (time-to-live) of 5 minutes (300 seconds) instead of the old 24 hours by default. Use `VagrantDNS::Config.ttl = 86400` to reset to the old behaviour.
+* Resources will now respond with a low TTL (time-to-live) of 5 minutes (300 seconds) instead of the old 24 hours by default. Use `VagrantDNS::Config.ttl = 86400` to reset to the old behavior.
 * Internal changes on how the dns pattern config is read and written. (Now using `YAML::Store`)
 * Acceptance tests run against vagrant v2.1.4
 * Acceptance tests run against Ubuntu 18.04
 
-### New Feautres:
+### New Features:
 
 * Adds a check for the VMs configured TLDs to not be included in the [Public Suffix List](https://publicsuffix.org/)
 
@@ -91,7 +91,7 @@
 * Add support for boxes with `public_network` and static IP.
 * Breaking: No longer falls back to `127.0.0.1` when no IP could be found.
 * Log messages will now be tagged with the related box (vm) and `[vagrant-dns]`
-* Develepment targets Vagrant 1.9.3
+* Development targets Vagrant 1.9.3
 
 ## 1.0.0
 
