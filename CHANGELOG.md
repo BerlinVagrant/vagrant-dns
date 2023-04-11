@@ -1,4 +1,4 @@
-## HEAD
+## 2.4.0 (2023-04-11)
 
 * DHCP support. [GH-51]
 * Non-A-queries (like IPv6 AAAA- or TXT records) matching a configured pattern will be answered with a `NOTIMP` error. [GH-76]
