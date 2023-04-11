@@ -41,7 +41,7 @@
 
 ### Breaking Changes:
 
-* Removes the global and vm config  `ipv4only`. It was never been used.
+* Removes the global and vm config  `ipv4only`. It was never used.
 
 ### Changes:
 
