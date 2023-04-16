@@ -1,3 +1,7 @@
+## 2.4.1 (2023-04-16)
+
+* Fix plugin hooking for multi-machine setups. [GH-78]
+
 ## 2.4.0 (2023-04-11)
 
 * DHCP support. [GH-51]
