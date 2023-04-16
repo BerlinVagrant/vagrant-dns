@@ -34,4 +34,15 @@ Vagrant.configure("2") do |config|
 
   VagrantDNS::Config.passthrough = false # :unknown
   VagrantDNS::Config.passthrough_resolver = [ [:udp, "1.0.0.1", 53], ["tcp", "1.0.0.1", 53] ]
+
+  (1..3).each do |i|
+    config.vm.define "worker#{i}" do |subconfig|
+      subconfig.dns.tld = "test"
+      subconfig.vm.hostname = "vagrant#{i}"
+      subconfig.dns.patterns = "worker#{i}.mysite.test"
+      subconfig.vm.box = "bento/ubuntu-22.10"
+      config.vm.network :private_network, type: :dhcp
+      # subconfig.vm.network "private_network", ip: "10.240.0.#{i+15}"
+    end
+  end
 end
