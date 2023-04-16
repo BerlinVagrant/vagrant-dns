@@ -38,7 +38,14 @@ module VagrantDNS
 
     # @private
     def self.hook_once(middleware, hook)
-      return if hook.append_hooks.any? { |stack_item| stack_item.middleware == middleware }
+      return if hook.append_hooks.any? { |stack_item|
+        if stack_item.is_a?(Array)
+          stack_item.first == middleware
+        else
+          stack_item.middleware == middleware
+        end
+
+      }
       hook.append middleware
     end
   end
