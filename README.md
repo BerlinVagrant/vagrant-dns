@@ -12,7 +12,7 @@ Alternatively, you can install an older version of vagrant-dns like this: `vagra
 
 ## Usage
 
-In addition to your networking config, configure a top-level domain and a `hostname` for your machine. Optionally, configure a set of free matching patterns. Global configuration options can be given through the `VagrantDNS::Config` object:
+In addition to your networking config, configure a top-level domain and a `hostname` for your machine. Global configuration options can be given through the `VagrantDNS::Config` object:
 
 ```ruby
 Vagrant.configure("2") do |config|
@@ -21,8 +21,6 @@ Vagrant.configure("2") do |config|
   config.dns.tld = "test"
 
   config.vm.hostname = "machine"
-
-  config.dns.patterns = [/^(\w+\.)*mysite\.test$/, /^(\w+\.)*myothersite\.test$/]
 
   config.vm.network :private_network, ip: "33.33.33.60"
 end
@@ -73,8 +71,8 @@ resolver #8
   port     : 5300
 [ … ]
 
-$ dscacheutil -q host -a name test.machine.test
-name: test.machine.test
+$ dscacheutil -q host -a name machine.test
+name: machine.test
 ip_address: 33.33.33.10
 ```
 
@@ -88,8 +86,8 @@ resolv.conf mode: stub
       DNS Domain: ~test
 [ … ]
 
-$ resolvectl query test.machine.test
-test.machine.test: 33.33.33.10
+$ resolvectl query machine.test
+machine.test: 33.33.33.10
 
 -- Information acquired via protocol DNS in 10.1420s.
 -- Data is authenticated: no; Data was acquired via local or encrypted transport: no
@@ -100,7 +98,7 @@ test.machine.test: 33.33.33.10
 for more information.
 
 
-You can now reach the server under the given domain.
+You can now reach the server under the given domain.  In fact the default pattern matches not just `machine.test`, but all prefixes of that domain, such as `server1.machine.test` etc.
 
 ```bash
 $ vagrant dns --stop
@@ -118,11 +116,41 @@ $ vagrant dns --list
 The output looks somewhat like this:
 
 ```
-/^.*mysite.test$/ => 33.33.33.60
-/^.*myothersite.test$/ => 33.33.33.60
+/^.*machine.test$/ => 33.33.33.60
 ```
 
 Where the first part of each line is a [regular expression](https://ruby-doc.org/core-2.3.0/Regexp.html) and the second part is the mapped IPv4. (` => ` is just a separator)
+
+## Custom patterns
+
+You can map many DNS names to a single machine by customising the `patterns`:
+
+```ruby
+Vagrant.configure("2") do |config|
+  # ...
+
+  config.dns.tld = "test"
+
+  config.vm.hostname = "machine"
+
+  config.dns.patterns = [/^mysite\.test$/, /^(\w+\.)*myothersite\.test$/]
+
+  config.vm.network :private_network, ip: "33.33.33.60"
+end
+```
+
+You can list those patterns.  Notice that this now doesn't include the original `machine.test` pattern unless you explicitly add it to the configuration:
+
+```bash
+$ vagrant dns --list
+```
+
+```
+/^mysite\.test$/ => 33.33.33.60
+/^(\w+\.)*myothersite\.test$/ => 33.33.33.60
+```
+
+Your machine is now reachable as `mysite.test`, `myothersite.test`, `server1.myothersite.test` etc.
 
 ## Multi VM config
 
