@@ -12,7 +12,7 @@ module VagrantDNS
       @ttl = ttl
 
       @resolver = if resolver.nil? || resolver == :system
-        RubyDNS::Resolver.new(Async::DNS::System.nameservers)
+        Async::DNS::Resolver.default
       elsif !resolver || resolver.empty?
         nil
       else
