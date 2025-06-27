@@ -27,6 +27,7 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency "daemons"
   gem.add_dependency "rubydns", '~> 2.0.0'
+  gem.add_dependency "async-dns", '< 1.4.0'
   gem.add_dependency "public_suffix"
 
   # Pinning async gem to work around an issue in vagrant, where it does not
