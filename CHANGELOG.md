@@ -1,4 +1,4 @@
-## 2.4.2 (unreleased)
+## 2.4.2 (2025-06-27)
 
 * Pin async-dns to < 1.4 to avoid breaking changes in its API. [GH-85]
 
