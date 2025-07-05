@@ -1,6 +1,5 @@
 require 'pp'
 require 'rubydns'
-require 'async/dns/system'
 
 module VagrantDNS
   class Server
