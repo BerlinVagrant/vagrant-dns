@@ -23,17 +23,16 @@ Gem::Specification.new do |gem|
     "wiki_uri"        => "https://github.com/BerlinVagrant/vagrant-dns/wiki"
   }
 
-  gem.required_ruby_version = '>= 2.2.6'
+  gem.required_ruby_version = '>= 3.3.5'
 
   gem.add_dependency "daemons"
-  gem.add_dependency "rubydns", '~> 2.1'
+  gem.add_dependency "rubydns", '~> 2.1.1'
   gem.add_dependency "public_suffix"
 
-  # Pinning async gem to work around an issue in vagrant, where it does not
-  # honor "required_ruby_version" while resolving sub-dependencies.
-  # see: https://github.com/hashicorp/vagrant/issues/12640
-  gem.add_dependency 'async', '~> 1.30', '>= 1.30.3'
-  gem.add_dependency 'async-dns', '~> 1.4'
+  # Pinning transient dependencies of `rubydns` to avoid
+  # ruby version compatibility issues.
+  gem.add_dependency "async-dns", '~> 1.4.1'
+  gem.add_dependency 'async', '~> 2.25.0'
 
   gem.add_development_dependency 'rspec'
 end

@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 ruby(File.read(File.expand_path('.ruby-version', __dir__))[/\d+\.\d+\.\d+.*/])
 
-ENV['TEST_VAGRANT_VERSION'] ||= 'v2.3.4'
+ENV['TEST_VAGRANT_VERSION'] ||= 'v2.4.7'
 
 # Using the :plugins group causes Vagrant to automagially load auto_network
 # during acceptance tests.
@@ -18,7 +18,7 @@ group :test, :development do
   else
     gem 'vagrant', :git => 'https://github.com/hashicorp/vagrant', :tag => ENV['TEST_VAGRANT_VERSION']
   end
-  gem 'rubydns', '~> 2.0.0'
+  gem 'rubydns', '~> 2.1.1'
 end
 
 group :test do
