@@ -19,7 +19,7 @@ module VagrantDNS
       end
 
       if passthrough && !resolver
-        puts "[Warning] 'passthrough' config has no effect, sice no passthrough resolver is set."
+        puts "[Warning] 'passthrough' config has no effect, since no passthrough resolver is set."
       end
 
       @passthrough = !!@resolver && passthrough
