@@ -16,7 +16,7 @@ module VagrantDNS
       elsif !resolver || resolver.empty?
         nil
       else
-        RubyDNS::Resolver.new(resolver)
+        Async::DNS::Resolver.new(resolver)
       end
 
       if passthrough && !resolver
